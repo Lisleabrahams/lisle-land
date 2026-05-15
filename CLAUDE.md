@@ -27,9 +27,11 @@ The Sanity client (`lib/sanity.js`) currently uses hardcoded values; env vars ar
 ## Deployment
 
 - **GitHub repo:** https://github.com/Lisleabrahams/lisle-land
-- **Vercel project:** `lisle-land` under scope `ooo-8fbb30c6` (alison93290-3695)
-- **Current production URL:** https://lisle-land-dwrs2k5wk-ooo-8fbb30c6.vercel.app
-- **Intended domain:** lisle.land (registered via Vercel, but on a different Vercel account — needs to be attached manually, see below)
+- **Vercel project:** `lisle-land` under scope `lisle-abrahams-projects` (Lisle's account, `fractalpdf-7657`)
+- **Production URL:** https://lisle.land (also https://www.lisle.land)
+- **Vercel preview URL:** https://lisle-land-lisle-abrahams-projects.vercel.app
+
+Framework preset is `Next.js` (must be — the project was briefly created with framework `Other` when linked from the wrong directory, which produced a 404 on the custom domain because Vercel didn't know to serve from `.next/`; recreating the project from inside `lisle-land/` fixed it).
 
 ## What changed from the source repo
 
@@ -40,15 +42,15 @@ The fork is a clean trim, not a redesign. The portfolio chrome, scroll modules, 
 - **Metadata + footer updated.** Page title, OG description, and footer copy now reference `lisle.land` instead of `pool.day`.
 - **Package renamed** from `pool-portfolio-frontend` to `lisle-land`.
 
-## Outstanding: attach lisle.land
+## Connecting GitHub for push-to-deploy
 
-The domain is registered through Vercel but sits on a different Vercel account than the one this project was deployed under. The CLI can't move it cross-account. To attach:
+The Vercel CLI returned `Failed to link Lisleabrahams/lisle-land. You need to add a Login Connection to your GitHub account first.` when trying to wire the repo to the Vercel project. To enable auto-deploy on push to `main`:
 
-1. Open https://vercel.com/dashboard/domains under whichever account owns `lisle.land`.
-2. Either:
-   - **Transfer the project:** move the `lisle-land` Vercel project into the team that owns the domain, then run `vercel domains add lisle.land` again.
-   - **Or transfer the domain:** move `lisle.land` into the `alison93290-3695` scope, then run `vercel domains add lisle.land`.
-3. After it attaches, Vercel will auto-issue the TLS cert and the apex + www records will resolve.
+1. Open https://vercel.com/account/login-connections (logged in as the Vercel account that owns `lisle-abrahams-projects`).
+2. Add the GitHub login connection for the `Lisleabrahams` GitHub account.
+3. In the Vercel project → Settings → Git → connect the `Lisleabrahams/lisle-land` repo.
+
+Until that's done, deploys are manual via `vercel --prod`.
 
 ## Commands
 
