@@ -1,5 +1,5 @@
 {
-  "name": "pool-portfolio-frontend",
+  "name": "lisle-land",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,8 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@react-three/drei": "^10.7.7",
-    "@react-three/fiber": "^9.4.2",
     "@sanity/client": "^7.13.1",
     "@sanity/image-url": "^2.0.1",
     "framer-motion": "^12.23.25",
@@ -20,8 +18,7 @@
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-draggable": "^4.5.0",
-    "terminal-in-react": "^4.3.1",
-    "three": "^0.181.2"
+    "terminal-in-react": "^4.3.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

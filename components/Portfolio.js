@@ -1,19 +1,6 @@
-/*
- ██████╗  ██████╗  ██████╗ ██╗         ██████╗  █████╗ ██╗   ██╗
- ██╔══██╗██╔═══██╗██╔═══██╗██║         ██╔══██╗██╔══██╗╚██╗ ██╔╝
- ██████╔╝██║   ██║██║   ██║██║         ██║  ██║███████║ ╚████╔╝ 
- ██╔═══╝ ██║   ██║██║   ██║██║         ██║  ██║██╔══██║  ╚██╔╝  
- ██║     ╚██████╔╝╚██████╔╝███████╗    ██████╔╝██║  ██║   ██║   
- ╚═╝      ╚═════╝  ╚═════╝ ╚══════╝    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   
-                                                                 
- Built in 48 hours by Lisle Abrahams
- Hey pool.day team! Thanks for checking under the hood 👀
-*/
-
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import DuckCanvas from './DuckCanvas'
 import VideoPlayer from './VideoPlayer'
 
 // Horizontal Scroll Image Component
@@ -476,13 +463,12 @@ function FullWidthVideo({ src, alt, desktopWidth = '100' }) {
   )
 }
 
-export default function Portfolio({ introText, projects, duckModelUrl }) {
+export default function Portfolio({ introText, projects }) {
   const [displayedText, setDisplayedText] = useState('')
   const [showProjects, setShowProjects] = useState(false)
   const [expandedProject, setExpandedProject] = useState(null)
   const [currentDescription, setCurrentDescription] = useState('')
   const [isTyping, setIsTyping] = useState(false)
-  const [ducks, setDucks] = useState([])
   const [imageBlurs, setImageBlurs] = useState({})
   const [showElements, setShowElements] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
@@ -492,14 +478,13 @@ export default function Portfolio({ introText, projects, duckModelUrl }) {
   
   const mediaRefs = useRef([])
 
-  const actualIntroText = `Welcome to the folio of Lisle Abrahams!
+  const actualIntroText = `Lisle Abrahams
 
-I challenged myself to concept and build this portfolio in 48 hours — just for you at Random Access Memories Co. I'm here for the Content Lead role, or any creative lead space that needs filling. I've spent years shaping digital and brand stories at Highsnobiety, but what excites me most is building at the frontier of human-AI collaboration.
+World-class creative director with 15+ years of agency craft, now operating as an AI-augmented studio of one. I direct brand worlds, motion, editorial systems, and AI-generated content pipelines for clients shipping at the frontier.
 
-Honestly, I'm at a moment in my life where I'm looking for something genuine — a place that excites me, where I wake up wanting to work.
-Pool feels like that. I'd love to help define the voice, the universe, and the story of what you're building.
+Curious, creative, kind, and built to move fast.
 
-Curious, creative, kind, and ready to ship... Enjoy — much love, Lisle`
+Selected work below.`
 
   // Typing animation for intro
   useEffect(() => {
@@ -805,57 +790,6 @@ Curious, creative, kind, and ready to ship... Enjoy — much love, Lisle`
         </div>
       )}
 
-      {/* Duck Me Baby Button - Desktop Only */}
-      {!isMobile && (
-        <button
-          onClick={() => setDucks([...ducks, { id: Date.now() }])}
-          style={{
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            background: 'none',
-            border: 'none',
-            fontFamily: '"Geist Mono", monospace',
-            fontSize: '12px',
-            lineHeight: '16px',
-            fontWeight: 300,
-            cursor: 'pointer',
-            color: '#fff',
-            mixBlendMode: 'difference',
-            zIndex: 1001
-          }}
-        >
-          Duck Me Baby
-        </button>
-      )}
-
-      {/* Clear My Ducks Button - Desktop Only */}
-      {!isMobile && ducks.length > 0 && (
-        <button
-          onClick={() => {
-            // Trigger clearing animation - DuckCanvas will handle the actual removal
-            window.dispatchEvent(new CustomEvent('clearDucks'))
-          }}
-          style={{
-            position: 'fixed',
-            top: '20px',
-            right: '180px',
-            background: 'none',
-            border: 'none',
-            fontFamily: '"Geist Mono", monospace',
-            fontSize: '12px',
-            lineHeight: '16px',
-            fontWeight: 300,
-            cursor: 'pointer',
-            color: '#fff',
-            mixBlendMode: 'difference',
-            zIndex: 1001
-          }}
-        >
-          Clear My Ducks
-        </button>
-      )}
-
       {/* Blur transition overlay */}
       <div style={{
         position: 'fixed',
@@ -920,51 +854,6 @@ Curious, creative, kind, and ready to ship... Enjoy — much love, Lisle`
               color: '#fff',
               mixBlendMode: 'difference'
             }}>
-              {/* Duck Me Baby Buttons */}
-              <div style={{ marginBottom: '12px', display: 'flex', gap: '16px' }}>
-                <button
-                  onClick={() => setDucks([...ducks, { id: Date.now() }])}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    fontFamily: 'inherit',
-                    fontSize: '12px',
-                    lineHeight: '16px',
-                    fontWeight: 300,
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                    color: '#fff',
-                    mixBlendMode: 'difference',
-                    padding: 0
-                  }}
-                >
-                  Duck Me Baby
-                </button>
-                {ducks.length > 0 && (
-                  <button
-                    onClick={() => {
-                      // Trigger clearing animation - DuckCanvas will handle the actual removal
-                      window.dispatchEvent(new CustomEvent('clearDucks'))
-                    }}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      fontFamily: 'inherit',
-                      fontSize: '12px',
-                      lineHeight: '16px',
-                      fontWeight: 300,
-                      textDecoration: 'underline',
-                      cursor: 'pointer',
-                      color: '#fff',
-                      mixBlendMode: 'difference',
-                      padding: 0
-                    }}
-                  >
-                    Clear My Ducks
-                  </button>
-                )}
-              </div>
-
               {/* Project List */}
               <div style={{
                 opacity: showElements ? 1 : 0,
@@ -1302,9 +1191,8 @@ Curious, creative, kind, and ready to ship... Enjoy — much love, Lisle`
                     fontSize: '11px',
                     color: '#999'
                   }}>
-                    <div>© 2025</div>
-                    <div>pool.day folio application</div>
-                    <div>Built in 48 hours</div>
+                    <div>© 2026</div>
+                    <div>lisle.land</div>
                     <a 
                       href="https://www.linkedin.com/in/lisle-abrahams-274764251/" 
                       target="_blank" 
@@ -1321,8 +1209,6 @@ Curious, creative, kind, and ready to ship... Enjoy — much love, Lisle`
         </div>
       )}
       </div>
-
-      <DuckCanvas ducks={ducks} onClose={() => setDucks([])} modelUrl={duckModelUrl} />
 
       <style jsx>{`
         @keyframes blink {

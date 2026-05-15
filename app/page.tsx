@@ -42,40 +42,17 @@ async function getData() {
     },
     descriptions[]
   }`)
-  
-  console.log('=== FETCHED FROM SANITY ===')
-  console.log('Projects:', projects?.map((p: any) => ({ title: p.title, description: p.description })))
-  
-  return { homepage, projects }
-}
 
-async function getDuckModel() {
-  const duck = await client.fetch(`
-    *[_type == "duck"][0] {
-      _id,
-      title,
-      "modelUrl": glbModel.asset->url
-    }
-  `)
-  console.log('Duck model data:', duck)
-  
-  // Proxy through our API to avoid CORS issues
-  if (duck?.modelUrl) {
-    duck.modelUrl = `/api/proxy-model?url=${encodeURIComponent(duck.modelUrl)}`
-  }
-  
-  return duck
+  return { homepage, projects }
 }
 
 export default async function Home() {
   const { homepage, projects } = await getData()
-  const duckModel = await getDuckModel()
 
   return (
-    <Portfolio 
-      introText={homepage?.introText} 
+    <Portfolio
+      introText={homepage?.introText}
       projects={projects}
-      duckModelUrl={duckModel?.modelUrl}
     />
   )
 }

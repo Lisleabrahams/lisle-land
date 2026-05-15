@@ -13,19 +13,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lisle & Pool",
-  description: "Portfolio of Lisle Abrahams — Content Lead, Art Director, and Creative exploring the frontier of human-AI collaboration.",
+  title: "Lisle Abrahams",
+  description: "World-class creative director with 15+ years of agency craft, now operating as an AI-augmented studio of one.",
   keywords: ["portfolio", "creative", "content lead", "art direction", "design"],
   authors: [{ name: "Lisle Abrahams" }],
   openGraph: {
-    title: "Lisle & Pool",
-    description: "Portfolio of Lisle Abrahams — Content Lead, Art Director, and Creative exploring the frontier of human-AI collaboration.",
+    title: "Lisle Abrahams",
+    description: "World-class creative director with 15+ years of agency craft, now operating as an AI-augmented studio of one.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Lisle & Pool",
-    description: "Portfolio of Lisle Abrahams — Content Lead, Art Director, and Creative exploring the frontier of human-AI collaboration.",
+    title: "Lisle Abrahams",
+    description: "World-class creative director with 15+ years of agency craft, now operating as an AI-augmented studio of one.",
   },
 };
 
