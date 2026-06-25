@@ -20,8 +20,8 @@ const HIDE_DELAY_MS = 60  // brief beat at 100% before fade
 const MAX_HOLD_MS = 5000  // safety: don't hold at 95 forever if `load` never fires
 const HORIZONTAL_PADDING = 24 // breathing room on narrow viewports
 
-export default function Loader({ label } = {}) {
-  const LABEL = label || DEFAULT_LABEL
+export default function Loader(props) {
+  const LABEL = (props && props.label) || DEFAULT_LABEL
   // Server renders [0%]; client takes over after hydration.
   const [progress, setProgress] = useState(0)
   const [hidden, setHidden] = useState(false)

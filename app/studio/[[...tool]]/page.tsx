@@ -3,7 +3,13 @@ import config from '@/sanity.config'
 
 export const dynamic = 'force-static'
 
-export {viewport} from 'next-sanity/studio'
+// Full-bleed studio viewport (defined inline rather than re-exported from
+// next-sanity, to avoid coupling to that package's export surface).
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+}
 
 export const metadata = {
   title: 'lisle.land — Studio',
