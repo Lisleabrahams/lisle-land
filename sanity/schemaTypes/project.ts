@@ -1,0 +1,89 @@
+import {defineType, defineField, defineArrayMember} from 'sanity'
+
+/**
+ * Portfolio project. Schema reproduced from the existing `production` dataset
+ * so every field on current documents is editable without data loss. The
+ * `media` array mixes custom modules with extended built-in image/file members
+ * (their stored `_type` stays "image"/"file", matching existing content).
+ */
+export default defineType({
+  name: 'project',
+  title: 'Project',
+  type: 'document',
+  fields: [
+    defineField({name: 'title', title: 'Title', type: 'string', validation: (R) => R.required()}),
+    defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: {source: 'title', maxLength: 96},
+      validation: (R) => R.required(),
+    }),
+    defineField({
+      name: 'order',
+      title: 'Order',
+      type: 'number',
+      description: 'Controls position in the portfolio (ascending).',
+    }),
+    defineField({name: 'description', title: 'Description', type: 'text', rows: 4}),
+    defineField({
+      name: 'media',
+      title: 'Media modules',
+      type: 'array',
+      of: [
+        defineArrayMember({type: 'parallaxModule'}),
+        defineArrayMember({type: 'splitScreenModule'}),
+        defineArrayMember({type: 'horizontalImage'}),
+        defineArrayMember({type: 'backgroundColorTrigger'}),
+        defineArrayMember({type: 'spacer'}),
+        // Extended built-in image — stored _type "image".
+        defineArrayMember({
+          type: 'image',
+          name: 'image',
+          title: 'Image',
+          options: {hotspot: true},
+          fields: [
+            defineField({name: 'title', title: 'Title', type: 'string'}),
+            defineField({name: 'description', title: 'Caption', type: 'text', rows: 2}),
+            defineField({name: 'alt', title: 'Alt text', type: 'string'}),
+            defineField({
+              name: 'desktopWidth',
+              title: 'Desktop width (%)',
+              type: 'string',
+              options: {list: ['100', '80', '60', '50', '40']},
+            }),
+            defineField({name: 'mobileImage', title: 'Mobile image', type: 'image', options: {hotspot: true}}),
+            defineField({name: 'mobileFullHeight', title: 'Mobile full height', type: 'boolean'}),
+          ],
+        }),
+        // Extended built-in file (video) — stored _type "file".
+        defineArrayMember({
+          type: 'file',
+          name: 'file',
+          title: 'Video / file',
+          fields: [
+            defineField({
+              name: 'desktopWidth',
+              title: 'Desktop width (%)',
+              type: 'string',
+              options: {list: ['100', '80', '60', '50', '40']},
+            }),
+            defineField({
+              name: 'videoDisplayType',
+              title: 'Video display',
+              type: 'string',
+              options: {list: ['fullWidth', 'contained']},
+            }),
+            defineField({name: 'mobileFullHeight', title: 'Mobile full height', type: 'boolean'}),
+          ],
+        }),
+      ],
+    }),
+  ],
+  orderings: [
+    {title: 'Order, ascending', name: 'orderAsc', by: [{field: 'order', direction: 'asc'}]},
+  ],
+  preview: {
+    select: {title: 'title', subtitle: 'slug.current'},
+  },
+})

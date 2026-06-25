@@ -478,7 +478,9 @@ export default function Portfolio({ introText, projects }) {
   
   const mediaRefs = useRef([])
 
-  const actualIntroText = `Lisle Abrahams
+  // Per-pitch override: when an `introText` prop is supplied (pitch pages),
+  // it replaces the default site intro. Falls back to the canonical copy.
+  const actualIntroText = introText || `Lisle Abrahams
 
 World-class creative director with 15+ years of agency craft, now operating as an AI-augmented studio of one. I direct brand worlds, motion, editorial systems, and AI-generated content pipelines for clients shipping at the frontier.
 

@@ -10,14 +10,19 @@
   },
   "dependencies": {
     "@sanity/client": "^7.13.1",
+    "@sanity/icons": "^3.7.4",
     "@sanity/image-url": "^2.0.1",
+    "@sanity/vision": "^6.2.0",
     "framer-motion": "^12.23.25",
     "lucide-react": "^0.556.0",
     "media-chrome": "^4.16.1",
     "next": "16.0.7",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
+    "next-sanity": "^13.1.1",
+    "react": "^19.2.2",
+    "react-dom": "^19.2.2",
     "react-draggable": "^4.5.0",
+    "sanity": "^6.2.0",
+    "styled-components": "^6.4.3",
     "terminal-in-react": "^4.3.1"
   },
   "devDependencies": {
