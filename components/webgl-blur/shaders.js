@@ -83,7 +83,7 @@ void main() {
     vUv.y * ratio.y + (1.0 - ratio.y) * 0.5
   );
 
-  // (Removed the repo's full-frame animated grain: `final - noise * 0.08`.)
+  // (Removed the repo's full-frame animated grain that was subtracted here.)
   vec4 final = vec4(blur(uv, tMap, 0.08), 1.);
 
   gl_FragColor = final;
