@@ -24,10 +24,10 @@ export default function SiteChrome() {
         aria-hidden="true"
         style={{
           position: 'fixed',
-          top: 33,
-          left: 33,
-          right: 33,
-          bottom: 33,
+          top: 23,
+          left: 23,
+          right: 23,
+          bottom: 23,
           border: '1px solid #fff',
           mixBlendMode: 'difference',
           zIndex: 10001,

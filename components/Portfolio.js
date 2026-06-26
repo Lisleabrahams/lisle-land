@@ -479,14 +479,11 @@ export default function Portfolio({ introText, projects }) {
   const mediaRefs = useRef([])
 
   // Per-pitch override: when an `introText` prop is supplied (pitch pages),
-  // it replaces the default site intro. Falls back to the canonical copy.
-  const actualIntroText = introText || `Lisle Abrahams
-
-World-class creative director with 15+ years of agency craft, now operating as an AI-augmented studio of one. I direct brand worlds, motion, editorial systems, and AI-generated content pipelines for clients shipping at the frontier.
-
-Curious, creative, kind, and built to move fast.
-
-Selected work below.`
+  // it replaces the default site intro. Falls back to the canonical copy —
+  // one solid paragraph (shorter on mobile).
+  const desktopIntro = `Lisle Abrahams — an AI-augmented studio of one, directing brand worlds, motion, editorial systems and AI-generated content pipelines for clients shipping at the frontier. Curious, creative, kind, and built to move fast.`
+  const mobileIntro = `Lisle Abrahams — an AI-augmented studio of one, directing brand worlds, motion and AI-generated content for clients at the frontier. Built to move fast.`
+  const actualIntroText = introText || (isMobile ? mobileIntro : desktopIntro)
 
   // Typing animation for intro
   useEffect(() => {
@@ -508,7 +505,7 @@ Selected work below.`
     }, 20)
 
     return () => clearInterval(typingInterval)
-  }, [projects])
+  }, [projects, isMobile])
 
   // Typing animation for descriptions
   useEffect(() => {
@@ -680,13 +677,14 @@ Selected work below.`
           left: 0,
           right: 0,
           zIndex: 10001,
-          padding: '40px 44px 0',
+          padding: '30px 30px 0',
           margin: 0,
           color: '#fff',
           mixBlendMode: 'difference',
           fontFamily: '"Geist Mono", monospace',
-          fontSize: '10px',
-          lineHeight: '16px',
+          // Fluid type — ~10px on laptops, up to 18px on large external screens.
+          fontSize: 'clamp(10px, 0.72vw, 18px)',
+          lineHeight: 1.6,
           fontWeight: 300
         }}>
           {/* Intro Text — stretched ~full width */}
@@ -694,8 +692,8 @@ Selected work below.`
             whiteSpace: 'pre-wrap',
             padding: 0,
             margin: 0,
-            fontSize: '10px',
-            lineHeight: '16px',
+            fontSize: 'inherit',
+            lineHeight: 'inherit',
             fontWeight: 300,
             maxWidth: '100%'
           }}>
@@ -746,8 +744,8 @@ Selected work below.`
                       background: 'none',
                       border: 'none',
                       fontFamily: 'inherit',
-                      fontSize: '10px',
-                      lineHeight: '16px',
+                      fontSize: 'inherit',
+                      lineHeight: 'inherit',
                       fontWeight: 300,
                       padding: '4px 0',
                       cursor: 'pointer',
@@ -777,8 +775,8 @@ Selected work below.`
               <div style={{
                 flex: '0 0 auto',
                 width: 'min(1083px, 74vw)',
-                fontSize: '10px',
-                lineHeight: '16px',
+                fontSize: 'inherit',
+                lineHeight: 'inherit',
                 fontWeight: 300,
                 transformOrigin: 'left center',
                 opacity: showElements ? 1 : 0,
