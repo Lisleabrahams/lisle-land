@@ -83,14 +83,8 @@ void main() {
     vUv.y * ratio.y + (1.0 - ratio.y) * 0.5
   );
 
-  float t = uTime + 123.0;
-  float ta = t * 0.654321;
-  float tb = t * (ta * 0.123456);
-  vec4 noise = vec4(1. - tvNoise(uv, ta, tb));
-
+  // (Removed the repo's full-frame animated grain: `final - noise * 0.08`.)
   vec4 final = vec4(blur(uv, tMap, 0.08), 1.);
-
-  final = final - noise * 0.08;
 
   gl_FragColor = final;
 }
