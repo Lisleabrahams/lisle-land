@@ -12,6 +12,15 @@ export default defineType({
       type: 'string',
       description: 'Hex value, e.g. #000000 or #ffffff.',
     }),
+    defineField({
+      name: 'activationPoint',
+      title: 'Activation point (% from top of viewport)',
+      type: 'number',
+      description:
+        'When this colour kicks in as you scroll — % of the viewport height from the top. 50 = middle (default), 30 = upper third, 70 = lower third. Stack triggers (e.g. white → red → white) to fade through colours.',
+      initialValue: 50,
+      validation: (R) => R.min(0).max(100),
+    }),
     // Retained for backward compatibility with older documents.
     defineField({
       name: 'colorHex',

@@ -630,16 +630,18 @@ export default function Portfolio({ introText, projects }) {
     mediaRefs.current.forEach((ref, index) => {
       if (!ref || !ref.dataset.colorTrigger) return
 
+      // Fire when the marker crosses the configured activation line — a thin
+      // band at `activationPoint`% from the top of the viewport (default 50%).
+      const ap = Math.min(100, Math.max(0, Number(ref.dataset.activationPoint) || 50))
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
-            const color = ref.dataset.colorValue
-            setBackgroundColor(color || '#ffffff')
+            setBackgroundColor(ref.dataset.colorValue || '#ffffff')
           }
         },
-        { 
-          threshold: 0.5,  // Trigger when element is at middle
-          rootMargin: '0px'
+        {
+          threshold: 0,
+          rootMargin: `-${ap}% 0px -${100 - ap}% 0px`,
         }
       )
 
@@ -931,6 +933,7 @@ export default function Portfolio({ introText, projects }) {
                       mediaRefs.current[imgNum] = el
                       el.dataset.colorTrigger = 'true'
                       el.dataset.colorValue = colorValue
+                      el.dataset.activationPoint = String(media.activationPoint ?? 50)
                     }
                   }}
                   style={{
