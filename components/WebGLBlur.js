@@ -19,7 +19,7 @@ export default function WebGLBlur() {
       const start = performance.now()
       const hasMedia = () => document.querySelectorAll('.media img').length > 0
       // Wait for the images (and their layout) to be present.
-      while (!hasMedia() && performance.now() - start < 10000) {
+      while (!hasMedia() && performance.now() - start < 20000) {
         await new Promise((r) => setTimeout(r, 120))
         if (cancelled) return
       }

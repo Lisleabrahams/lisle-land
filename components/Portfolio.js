@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import VideoPlayer from './VideoPlayer'
+import WebGLBlur from './WebGLBlur'
 
 // Horizontal Scroll Image Component
 function HorizontalScrollImage({ src, alt }) {
@@ -475,8 +476,17 @@ export default function Portfolio({ introText, projects }) {
   const [transitionPhase, setTransitionPhase] = useState('none') // 'none', 'blurOut', 'blurIn'
   const [backgroundColor, setBackgroundColor] = useState('#fff')
   const [isMobile, setIsMobile] = useState(false)
-  
+  // WebGL progressive-blur mode. Gated behind ?gl=1 so production stays
+  // untouched until the effect is verified, then we flip the default.
+  const [webglMode, setWebglMode] = useState(false)
+
   const mediaRefs = useRef([])
+
+  useEffect(() => {
+    try {
+      setWebglMode(new URLSearchParams(window.location.search).get('gl') === '1')
+    } catch {}
+  }, [])
 
   // Per-pitch override: when an `introText` prop is supplied (pitch pages),
   // it replaces the default site intro. Falls back to the canonical copy.
@@ -808,6 +818,9 @@ Selected work below.`
         pointerEvents: 'none'
       }} />
 
+      {/* WebGL progressive-blur canvas (only in ?gl=1 mode) */}
+      {webglMode && <WebGLBlur />}
+
       {/* Main Container */}
       <div style={{
         minHeight: '100vh',
@@ -1100,15 +1113,43 @@ Selected work below.`
             
             // REGULAR IMAGE
             if (!media.asset?.url) return null  // Skip if no URL
-            
+
+            const regularSrc = isMobile && media.mobileImageUrl ? media.mobileImageUrl : media.asset.url
+            const regularWidth = isMobile ? 'calc(100vw - 24px)' : `min(calc(100vw - 120px), ${media.desktopWidth || 100}%)`
+
+            // WebGL mode: hide the <img> (global `.media img` rule) and let the
+            // shader redraw it with the top/bottom edge blur.
+            if (webglMode) {
+              return (
+                <figure
+                  key={`${expandedProject}-${imgNum}`}
+                  className="media"
+                  ref={(el) => { if (el) mediaRefs.current[imgNum] = el }}
+                  style={{
+                    width: regularWidth,
+                    margin: '0 auto',
+                    marginBottom: isMobile ? '16px' : '30px',
+                    display: 'block',
+                  }}
+                >
+                  <img
+                    src={regularSrc}
+                    alt={media.alt || `Project image ${imgNum + 1}`}
+                    crossOrigin="anonymous"
+                    style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'contain' }}
+                  />
+                </figure>
+              )
+            }
+
             return (
               <img
                 key={`${expandedProject}-${imgNum}`}
                 ref={(el) => { if (el) mediaRefs.current[imgNum] = el }}
-                src={isMobile && media.mobileImageUrl ? media.mobileImageUrl : media.asset.url}
+                src={regularSrc}
                 alt={media.alt || `Project image ${imgNum + 1}`}
                 style={{
-                  width: isMobile ? 'calc(100vw - 24px)' : `min(calc(100vw - 120px), ${media.desktopWidth || 100}%)`,
+                  width: regularWidth,
                   height: 'auto',
                   display: 'block',
                   margin: '0 auto',
