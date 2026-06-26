@@ -622,38 +622,38 @@ export default function Portfolio({ introText, projects, clientName = '' }) {
     mediaRefs.current = []  // Reset media refs when project changes
   }, [expandedProject])
 
-  // Detect color triggers on scroll
+  // Background colour triggers — deterministic scroll handler.
+  // Reads the markers straight from the DOM each scroll (mediaRefs gets reset
+  // on project change, which raced the old IntersectionObserver and left it
+  // attached to nothing). The active colour is the last marker whose top has
+  // scrolled above its activation line (`activationPoint`% from the top of the
+  // viewport). Stack triggers white → red → white and it fades through them.
   useEffect(() => {
     if (!expandedProject) return
 
-    const observers = []
-
-    mediaRefs.current.forEach((ref, index) => {
-      if (!ref || !ref.dataset.colorTrigger) return
-
-      // Fire when the marker reaches `activationPoint`% from the top of the
-      // viewport. We shrink the observer root to just the top band of height
-      // `ap`% (a real, non-zero region) — the marker becomes "intersecting" the
-      // moment it crosses into it. (A zero-height line never fires.)
-      const ap = Math.min(100, Math.max(1, Number(ref.dataset.activationPoint) || 50))
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setBackgroundColor(ref.dataset.colorValue || '#ffffff')
-          }
-        },
-        {
-          threshold: 0,
-          rootMargin: `0px 0px -${100 - ap}% 0px`,
+    const applyColour = () => {
+      const markers = document.querySelectorAll('[data-color-trigger="true"]')
+      if (!markers.length) return
+      const vh = window.innerHeight
+      let activeColour = '#ffffff'
+      markers.forEach((el) => {
+        const ap = Math.min(100, Math.max(1, Number(el.dataset.activationPoint) || 50))
+        const line = (ap / 100) * vh
+        if (el.getBoundingClientRect().top <= line) {
+          activeColour = el.dataset.colorValue || '#ffffff'
         }
-      )
+      })
+      setBackgroundColor(activeColour)
+    }
 
-      observer.observe(ref)
-      observers.push(observer)
-    })
-
+    // Run after paint so the markers exist, then on every scroll/resize.
+    const raf = requestAnimationFrame(applyColour)
+    window.addEventListener('scroll', applyColour, { passive: true })
+    window.addEventListener('resize', applyColour)
     return () => {
-      observers.forEach(obs => obs.disconnect())
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', applyColour)
+      window.removeEventListener('resize', applyColour)
     }
   }, [expandedProject])
 
