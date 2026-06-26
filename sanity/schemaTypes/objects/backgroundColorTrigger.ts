@@ -14,10 +14,24 @@ export default defineType({
     }),
     defineField({
       name: 'activationPoint',
-      title: 'Activation point (% from top of viewport)',
+      title: 'Activation point (% of viewport from top)',
       type: 'number',
       description:
-        'When this colour kicks in as you scroll — % of the viewport height from the top. 50 = middle (default), 30 = upper third, 70 = lower third. Stack triggers (e.g. white → red → white) to fade through colours.',
+        'When this colour kicks in as you scroll. Lower % = fires higher up the screen (later); higher % = fires nearer the bottom (sooner). 50 = middle. Stack triggers (e.g. white → red → white) to fade through colours.',
+      options: {
+        layout: 'dropdown',
+        list: [
+          {title: '10% — top (latest)', value: 10},
+          {title: '20%', value: 20},
+          {title: '30%', value: 30},
+          {title: '40%', value: 40},
+          {title: '50% — middle (default)', value: 50},
+          {title: '60%', value: 60},
+          {title: '70%', value: 70},
+          {title: '80%', value: 80},
+          {title: '90% — bottom (soonest)', value: 90},
+        ],
+      },
       initialValue: 50,
       validation: (R) => R.min(0).max(100),
     }),

@@ -28,7 +28,7 @@ export default function SiteChrome() {
           left: 23,
           right: 23,
           bottom: 23,
-          border: '1px solid #fff',
+          border: '0.5px solid #fff',
           mixBlendMode: 'difference',
           zIndex: 10001,
           pointerEvents: 'none',
