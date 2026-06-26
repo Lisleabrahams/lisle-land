@@ -26,6 +26,8 @@ precision highp float;
 uniform vec2 uImageSize;
 uniform vec2 uPlaneSize;
 uniform vec2 uViewportSize;
+uniform vec2 uResolution;   // drawing-buffer size in px (added)
+uniform float uEdge;        // edge-band height as a fraction of viewport (added)
 uniform float uBlurStrength;
 uniform float uTime;
 uniform sampler2D tMap;
@@ -51,7 +53,13 @@ float rand(vec2 co){
 */
 vec3 blur(vec2 uv, sampler2D image, float blurAmount){
   vec3 blurredImage = vec3(0.);
-  float gradient = smoothstep(0.8, 0.0, 3.4 - (gl_FragCoord.y / uViewportSize.y) / uViewportSize.y) * uBlurStrength + smoothstep(0.8, 0.0, (gl_FragCoord.y / uViewportSize.y) / uViewportSize.y) * uBlurStrength;
+  // Fixed-height edge bands: full blur within uEdge of the top and bottom
+  // viewport edges, sharp through the middle. (Replaces the original
+  // viewport-wide gradient so the band can be a set pixel height.)
+  float ny = gl_FragCoord.y / uResolution.y;
+  float topF = smoothstep(1.0 - uEdge, 1.0, ny);
+  float botF = 1.0 - smoothstep(0.0, uEdge, ny);
+  float gradient = (topF + botF) * uBlurStrength;
   #define repeats 40.
   for (float i = 0.; i < repeats; i++) {
     vec2 q = vec2(cos(degrees((i / repeats) * 360.)), sin(degrees((i / repeats) * 360.))) * (rand(vec2(i, uv.x + uv.y)) + blurAmount);

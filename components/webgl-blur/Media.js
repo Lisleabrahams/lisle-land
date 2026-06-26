@@ -4,6 +4,10 @@
 import { Mesh, Program, Texture } from 'ogl'
 import { vertex, fragment } from './shaders'
 
+// Height of the blurred edge band at the top and bottom of the viewport,
+// in CSS pixels. Tune this one number.
+const EDGE_PX = 100
+
 export default class Media {
   constructor ({ gl, geometry, scene, renderer, screen, viewport, $el, img }) {
     this.gl = gl
@@ -37,6 +41,8 @@ export default class Media {
         uPlaneSize: { value: [0, 0] },
         uImageSize: { value: [0, 0] },
         uViewportSize: { value: [this.viewport.width, this.viewport.height] },
+        uResolution: { value: [this.gl.canvas.width, this.gl.canvas.height] },
+        uEdge: { value: EDGE_PX / window.innerHeight },
         uTime: { value: 100 * Math.random() },
         uBlurStrength: { value: this.blurStrength },
       },
@@ -93,6 +99,10 @@ export default class Media {
     if (viewport) {
       this.viewport = viewport
       this.plane.program.uniforms.uViewportSize.value = [this.viewport.width, this.viewport.height]
+    }
+    if (this.plane) {
+      this.plane.program.uniforms.uResolution.value = [this.gl.canvas.width, this.gl.canvas.height]
+      this.plane.program.uniforms.uEdge.value = EDGE_PX / window.innerHeight
     }
     this.setScale()
 
