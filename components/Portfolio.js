@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import VideoPlayer from './VideoPlayer'
+import { boldNames } from './boldText'
 
 // Horizontal Scroll Image Component
 function HorizontalScrollImage({ src, alt }) {
@@ -463,7 +464,7 @@ function FullWidthVideo({ src, alt, desktopWidth = '100' }) {
   )
 }
 
-export default function Portfolio({ introText, projects }) {
+export default function Portfolio({ introText, projects, clientName = '' }) {
   const [displayedText, setDisplayedText] = useState('')
   const [showProjects, setShowProjects] = useState(false)
   const [expandedProject, setExpandedProject] = useState(null)
@@ -481,8 +482,8 @@ export default function Portfolio({ introText, projects }) {
   // Per-pitch override: when an `introText` prop is supplied (pitch pages),
   // it replaces the default site intro. Falls back to the canonical copy —
   // one solid paragraph (shorter on mobile).
-  const desktopIntro = `Lisle Abrahams — an AI-augmented studio of one, directing brand worlds, motion, editorial systems and AI-generated content pipelines for clients shipping at the frontier. Curious, creative, kind, and built to move fast.`
-  const mobileIntro = `Lisle Abrahams — an AI-augmented studio of one, directing brand worlds, motion and AI-generated content for clients at the frontier. Built to move fast.`
+  const desktopIntro = `Lisle Abrahams is an AI-augmented creative studio of one — directing brand worlds, motion, editorial systems and AI-generated content pipelines for clients shipping at the frontier. A way of working where idea, direction and build live in one set of hands, moving fluidly between concept and craft, art direction and execution. I treat AI as a collaborator rather than a shortcut: a tool for making work that feels considered, strange, and quietly alive, fast enough to keep pace with the brands betting on what comes next. Curious, creative, kind, and built to move fast.`
+  const mobileIntro = `Lisle Abrahams is an AI-augmented studio of one — directing brand worlds, motion, editorial systems and AI-generated content for clients at the frontier. Idea, direction and build in one set of hands, with AI as a collaborator. Curious, creative, kind, and built to move fast.`
   const actualIntroText = introText || (isMobile ? mobileIntro : desktopIntro)
 
   // Typing animation for intro
@@ -686,10 +687,10 @@ export default function Portfolio({ introText, projects }) {
           fontFamily: '"Geist Mono", monospace',
           // Fluid type — ~10px on laptops, up to 18px on large external screens.
           fontSize: 'clamp(10px, 0.72vw, 18px)',
-          lineHeight: 1.6,
+          lineHeight: 1.1,
           fontWeight: 300
         }}>
-          {/* Intro Text — stretched ~full width */}
+          {/* Intro Text — stretched ~full width, name bolded */}
           <div style={{
             whiteSpace: 'pre-wrap',
             padding: 0,
@@ -699,7 +700,7 @@ export default function Portfolio({ introText, projects }) {
             fontWeight: 300,
             maxWidth: '100%'
           }}>
-            {displayedText}
+            {boldNames(displayedText, ['Lisle Abrahams', clientName])}
             {!showProjects && <span style={{ animation: 'blink 1s infinite' }}>_</span>}
           </div>
 
@@ -773,10 +774,13 @@ export default function Portfolio({ introText, projects }) {
                 ))}
               </div>
 
-              {/* Description — stretched wide + slightly rotated */}
+              {/* Description — stretched wide + slightly rotated.
+                  marginTop clears the intro AND the upward swing of the rotation
+                  (which scales with width), so it never collides on any size. */}
               <div style={{
                 flex: '0 0 auto',
                 width: 'min(1083px, 74vw)',
+                marginTop: 'clamp(28px, 4vw, 70px)',
                 fontSize: 'inherit',
                 lineHeight: 'inherit',
                 fontWeight: 300,
@@ -826,7 +830,7 @@ export default function Portfolio({ introText, projects }) {
         filter: transitionPhase !== 'none' ? 'blur(30px)' : 'blur(0px)',
         fontFamily: '"Geist Mono", monospace',
         fontSize: '12px',
-        lineHeight: '16px',
+        lineHeight: 1.1,
         fontWeight: 300,
         color: '#1a1a1a',
         paddingTop: isMobile ? '20px' : '50vh',

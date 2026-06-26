@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { boldNames } from './boldText'
 
 // Match Portfolio.js intro paragraph exactly.
 const FONT_STACK = '"Geist Mono", monospace'
@@ -22,6 +23,9 @@ const HORIZONTAL_PADDING = 24 // breathing room on narrow viewports
 
 export default function Loader(props) {
   const LABEL = (props && props.label) || DEFAULT_LABEL
+  // Name to bold inside the loader text — your name on the site, the client
+  // name on pitch pages.
+  const boldName = (props && props.boldName) || 'Lisle Abrahams'
   // Server renders [0%]; client takes over after hydration.
   const [progress, setProgress] = useState(0)
   const [hidden, setHidden] = useState(false)
@@ -149,8 +153,9 @@ export default function Loader(props) {
 
   const sharedTextStyle = {
     fontFamily: FONT_STACK,
-    fontSize: `${FONT_SIZE}px`,
-    lineHeight: `${LINE_HEIGHT}px`,
+    // Match the page type: fluid, ~10px on laptops up to 18px on big screens.
+    fontSize: 'clamp(10px, 0.72vw, 18px)',
+    lineHeight: 1.1,
     fontWeight: FONT_WEIGHT,
     whiteSpace: 'nowrap',
   }
@@ -187,7 +192,7 @@ export default function Loader(props) {
           left: 0,
         }}
       >
-        {LABEL} [100%]
+        {boldNames(`${LABEL} [100%]`, [boldName])}
       </span>
 
       {/* Visible text — scales to fit single line. */}
@@ -200,7 +205,7 @@ export default function Loader(props) {
           transformOrigin: 'center center',
         }}
       >
-        {LABEL} [{progress}%]
+        {boldNames(`${LABEL} [${progress}%]`, [boldName])}
       </span>
     </div>
   )
