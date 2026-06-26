@@ -680,24 +680,24 @@ Selected work below.`
           left: 0,
           right: 0,
           zIndex: 10001,
-          padding: 0,
+          padding: '40px 44px 0',
           margin: 0,
           color: '#fff',
           mixBlendMode: 'difference',
           fontFamily: '"Geist Mono", monospace',
-          fontSize: '12px',
+          fontSize: '10px',
           lineHeight: '16px',
           fontWeight: 300
         }}>
-          {/* Intro Text */}
-          <div style={{ 
+          {/* Intro Text — stretched ~full width */}
+          <div style={{
             whiteSpace: 'pre-wrap',
             padding: 0,
             margin: 0,
-            fontSize: '12px',
+            fontSize: '10px',
             lineHeight: '16px',
             fontWeight: 300,
-            maxWidth: '60vw'
+            maxWidth: '100%'
           }}>
             {displayedText}
             {!showProjects && <span style={{ animation: 'blink 1s infinite' }}>_</span>}
@@ -705,11 +705,11 @@ Selected work below.`
 
           {/* Project List + Description */}
           {showProjects && (
-            <div style={{ 
+            <div style={{
               display: 'flex',
-              paddingTop: '20px',
-              paddingLeft: '60px',
-              marginTop: '20px',
+              paddingTop: '12px',
+              paddingLeft: '0px',
+              marginTop: '12px',
               gap: '40px'
             }}>
               {/* Project Names */}
@@ -746,35 +746,43 @@ Selected work below.`
                       background: 'none',
                       border: 'none',
                       fontFamily: 'inherit',
-                      fontSize: '12px',
+                      fontSize: '10px',
                       lineHeight: '16px',
                       fontWeight: 300,
                       padding: '4px 0',
                       cursor: 'pointer',
                       color: 'inherit',
-                      opacity: expandedProject === project._id ? 1 : 0.6
+                      // Selected = sharp; everything else heavy-blurred until hovered.
+                      opacity: expandedProject === project._id ? 1 : 0.6,
+                      filter: expandedProject === project._id ? 'blur(0px)' : 'blur(5.2px)',
+                      transition: 'filter 0.3s ease, opacity 0.3s ease'
                     }}
-                    onMouseEnter={(e) => e.target.style.opacity = 1}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.opacity = 1
+                      e.currentTarget.style.filter = 'blur(0px)'
+                    }}
                     onMouseLeave={(e) => {
                       if (expandedProject !== project._id) {
-                        e.target.style.opacity = 0.6
+                        e.currentTarget.style.opacity = 0.6
+                        e.currentTarget.style.filter = 'blur(5.2px)'
                       }
                     }}
                   >
-                    &gt;Project-{String(i + 1).padStart(2, '0')}_{project.title.replace(/\s+/g, '_')}
+                    {expandedProject === project._id ? '•' : '>'}Project-{String(i + 1).padStart(2, '0')}_{project.title.replace(/\s+/g, '_')}
                   </button>
                 ))}
               </div>
 
-              {/* Description */}
-              <div style={{ 
+              {/* Description — stretched wide + slightly rotated */}
+              <div style={{
                 flex: '0 0 auto',
-                width: 'min(450px, 30vw)',
-                fontSize: '12px',
+                width: 'min(1083px, 74vw)',
+                fontSize: '10px',
                 lineHeight: '16px',
                 fontWeight: 300,
+                transformOrigin: 'left center',
                 opacity: showElements ? 1 : 0,
-                transform: showElements ? 'scale(1)' : 'scale(0.95)',
+                transform: showElements ? 'rotate(-2.48deg) scale(1)' : 'rotate(-2.48deg) scale(0.95)',
                 transition: 'opacity 0.6s ease-out 0.2s, transform 0.6s ease-out 0.2s'
               }}>
                 {expandedProject && projects?.find(p => p._id === expandedProject) && (() => {

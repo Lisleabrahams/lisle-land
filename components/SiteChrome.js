@@ -18,6 +18,22 @@ export default function SiteChrome() {
     <>
       {pathname === '/' && <Loader />}
       <ProgressiveBlurEdges />
+      {/* Thin inset frame — above the blur, blends like the type so it stays
+          crisp and visible over any content. */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          top: 33,
+          left: 33,
+          right: 33,
+          bottom: 33,
+          border: '1px solid #fff',
+          mixBlendMode: 'difference',
+          zIndex: 10001,
+          pointerEvents: 'none',
+        }}
+      />
     </>
   )
 }
