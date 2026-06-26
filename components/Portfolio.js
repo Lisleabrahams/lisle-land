@@ -631,9 +631,11 @@ export default function Portfolio({ introText, projects, clientName = '' }) {
     mediaRefs.current.forEach((ref, index) => {
       if (!ref || !ref.dataset.colorTrigger) return
 
-      // Fire when the marker crosses the configured activation line — a thin
-      // band at `activationPoint`% from the top of the viewport (default 50%).
-      const ap = Math.min(100, Math.max(0, Number(ref.dataset.activationPoint) || 50))
+      // Fire when the marker reaches `activationPoint`% from the top of the
+      // viewport. We shrink the observer root to just the top band of height
+      // `ap`% (a real, non-zero region) — the marker becomes "intersecting" the
+      // moment it crosses into it. (A zero-height line never fires.)
+      const ap = Math.min(100, Math.max(1, Number(ref.dataset.activationPoint) || 50))
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
@@ -642,7 +644,7 @@ export default function Portfolio({ introText, projects, clientName = '' }) {
         },
         {
           threshold: 0,
-          rootMargin: `-${ap}% 0px -${100 - ap}% 0px`,
+          rootMargin: `0px 0px -${100 - ap}% 0px`,
         }
       )
 
