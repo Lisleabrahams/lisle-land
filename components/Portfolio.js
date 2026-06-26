@@ -670,14 +670,16 @@ Selected work below.`
 
   return (
     <>
-      {/* Desktop Fixed Header - OUTSIDE main container */}
+      {/* Desktop Fixed Header - OUTSIDE main container.
+          z-index sits ABOVE the edge-blur bands (10000) so the intro copy and
+          project nav stay sharp while the scrolling work still blurs. */}
       {!isMobile && (
         <div style={{
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
-          zIndex: 1000,
+          zIndex: 10001,
           padding: 0,
           margin: 0,
           color: '#fff',

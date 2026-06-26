@@ -38,7 +38,7 @@ function Band({ edge }) {
         left: 0,
         right: 0,
         [edge]: 0,
-        height: 'var(--edge-blur-height, 100px)',
+        height: 'var(--edge-blur-height, 120px)',
         zIndex: 10000,
         pointerEvents: 'none',
       }}
