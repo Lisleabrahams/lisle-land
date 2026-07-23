@@ -22,6 +22,7 @@ export default function SiteChrome() {
           crisp and visible over any content. */}
       <div
         aria-hidden="true"
+        className="max-md:hidden"
         style={{
           position: 'fixed',
           top: 23,

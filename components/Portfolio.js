@@ -1062,6 +1062,20 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                   />
                 )
               }
+
+              // Contained autoplay video — inline, centred, narrower than full-bleed.
+              // Schema offers videoDisplayType 'contained'; without this branch it fell
+              // through to the collapsed thumbnail fallback and appeared not to render.
+              if (media.videoDisplayType === 'contained') {
+                return (
+                  <FullWidthVideo
+                    key={`${expandedProject}-${imgNum}`}
+                    src={media.asset.url}
+                    alt={media.alt || ''}
+                    desktopWidth={media.desktopWidth || '60'}
+                  />
+                )
+              }
               
               // Mobile: 9:16 cropped full height video
               if (isMobile && media.mobileFullHeight === true) {
