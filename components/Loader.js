@@ -43,10 +43,17 @@ export default function Loader(props) {
     let unmountTimeout = 0
     let safetyTimeout = 0
 
+    // Repeat visitors (intro already seen this browser) get a quick ~0.5s loader
+    // instead of the full count-up: shorter phases + no wait for window 'load'.
+    let seen = false
+    try { seen = localStorage.getItem('lisle_intro_seen') === '1' } catch (e) {}
+    const p1 = seen ? 300 : PHASE_1_MS
+    const p2 = seen ? 100 : PHASE_2_MS
+
     let ready = false
     const markReady = () => { ready = true }
 
-    if (typeof document !== 'undefined' && document.readyState === 'complete') {
+    if (seen || (typeof document !== 'undefined' && document.readyState === 'complete')) {
       markReady()
     } else {
       window.addEventListener('load', markReady)
@@ -62,7 +69,7 @@ export default function Loader(props) {
       if (cancelled) return
 
       if (phase === 1) {
-        const t = Math.min((now - startTime) / PHASE_1_MS, 1)
+        const t = Math.min((now - startTime) / p1, 1)
         // Ease-out quad — climbs quickly, settles into 95.
         const eased = 1 - Math.pow(1 - t, 2)
         progressVal = Math.floor(eased * 95)
@@ -96,7 +103,7 @@ export default function Loader(props) {
       }
 
       if (phase === 2) {
-        const t = Math.min((now - phase2Start) / PHASE_2_MS, 1)
+        const t = Math.min((now - phase2Start) / p2, 1)
         progressVal = Math.floor(phase2StartVal + (100 - phase2StartVal) * t)
         setProgress(progressVal)
         if (t >= 1) {
@@ -155,7 +162,7 @@ export default function Loader(props) {
     fontFamily: FONT_STACK,
     // Match the page type: fluid, ~10px on laptops up to 18px on big screens.
     fontSize: 'clamp(10px, 0.72vw, 18px)',
-    lineHeight: 1.1,
+    lineHeight: 1.3,
     fontWeight: FONT_WEIGHT,
     whiteSpace: 'nowrap',
   }

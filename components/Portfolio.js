@@ -486,8 +486,15 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
   const mobileIntro = `Lisle Abrahams is an AI-augmented studio of one — directing brand worlds, motion, editorial systems and AI-generated content for clients at the frontier. Idea, direction and build in one set of hands, with AI as a collaborator. Curious, creative, kind, and built to move fast.`
   const actualIntroText = introText || (isMobile ? mobileIntro : desktopIntro)
 
-  // Typing animation for intro
+  // Typing animation for intro. On repeat visits (already seen in this browser)
+  // type ~4x faster and shorten the reveal delay so returning visitors aren't
+  // made to wait through the full type-out. First-timers get the full effect.
   useEffect(() => {
+    let seen = false
+    try { seen = localStorage.getItem('lisle_intro_seen') === '1' } catch (e) {}
+    const typeSpeed = seen ? 5 : 20
+    const postDelay = seen ? 100 : 300
+
     let i = 0
     const typingInterval = setInterval(() => {
       if (i < actualIntroText.length) {
@@ -501,9 +508,10 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
           if (projects && projects.length > 0) {
             setExpandedProject(projects[0]._id)
           }
-        }, 300)
+          try { localStorage.setItem('lisle_intro_seen', '1') } catch (e) {}
+        }, postDelay)
       }
-    }, 20)
+    }, typeSpeed)
 
     return () => clearInterval(typingInterval)
   }, [projects, isMobile])
