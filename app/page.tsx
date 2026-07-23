@@ -1,6 +1,10 @@
 import { client } from '@/lib/sanity'
 import Portfolio from '@/components/Portfolio'
 
+// Refetch Sanity content at most every 60s, so publishes show up
+// on the live site without needing a redeploy.
+export const revalidate = 60
+
 async function getData() {
   const homepage = await client.fetch(`*[_type == "homepage"][0]`)
   const projects = await client.fetch(`*[_type == "project"] | order(order asc) {
@@ -34,7 +38,6 @@ async function getData() {
       alt,
       title,
       desktopWidth,
-      videoDisplayType,
       mobileFullHeight,
       size,
       colorHex,

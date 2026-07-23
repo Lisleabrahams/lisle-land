@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import VideoPlayer from './VideoPlayer'
 import { boldNames } from './boldText'
 
 // Horizontal Scroll Image Component
@@ -1057,35 +1056,14 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
               )
             }
             
-            // VIDEO
+            // VIDEO — single path: inline autoplay video at the Sanity
+            // "Desktop width (%)" control (100 = full-bleed, anything less is
+            // contained + centred). The old fullWidth/contained display-type
+            // dropdown and the collapsed click-to-expand player are gone.
             if (media._type === 'file' || media.asset?.mimeType?.startsWith('video/')) {
-              // Full width autoplay video
-              if (media.videoDisplayType === 'fullWidth') {
-                return (
-                  <FullWidthVideo
-                    key={`${expandedProject}-${imgNum}`}
-                    src={media.asset.url}
-                    alt={media.alt || ''}
-                    desktopWidth={media.desktopWidth || '100'}
-                  />
-                )
-              }
+              if (!media.asset?.url) return null  // Skip if no file uploaded
 
-              // Contained autoplay video — inline, centred, narrower than full-bleed.
-              // Schema offers videoDisplayType 'contained'; without this branch it fell
-              // through to the collapsed thumbnail fallback and appeared not to render.
-              if (media.videoDisplayType === 'contained') {
-                return (
-                  <FullWidthVideo
-                    key={`${expandedProject}-${imgNum}`}
-                    src={media.asset.url}
-                    alt={media.alt || ''}
-                    desktopWidth={media.desktopWidth || '60'}
-                  />
-                )
-              }
-              
-              // Mobile: 9:16 cropped full height video
+              // Mobile: 9:16 cropped full-height video when flagged in Sanity
               if (isMobile && media.mobileFullHeight === true) {
                 return (
                   <div 
@@ -1114,35 +1092,14 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                   </div>
                 )
               }
-              
-              // Default: collapsed thumbnail with expand
+
               return (
-                <div 
+                <FullWidthVideo
                   key={`${expandedProject}-${imgNum}`}
-                  ref={(el) => { if (el) mediaRefs.current[imgNum] = el }}
-                  style={{
-                    width: '100vw',
-                    height: '100vh',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#fff',
-                    marginLeft: 0,
-                    marginRight: 0,
-                    marginBottom: isMobile ? '16px' : 0,
-                    filter: `blur(${imageBlurs[imgNum] || 0}px)`,
-                    transition: 'filter 0.05s linear'
-                  }}
-                >
-                  <VideoPlayer
-                    src={media.asset.url}
-                    alt={media.alt || ''}
-                    style={{
-                      width: '500px',
-                      height: '500px'
-                    }}
-                  />
-                </div>
+                  src={media.asset.url}
+                  alt={media.alt || ''}
+                  desktopWidth={media.desktopWidth || '100'}
+                />
               )
             }
             

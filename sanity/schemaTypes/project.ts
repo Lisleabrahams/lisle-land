@@ -68,12 +68,6 @@ export default defineType({
               type: 'string',
               options: {list: ['100', '80', '60', '50', '40']},
             }),
-            defineField({
-              name: 'videoDisplayType',
-              title: 'Video display',
-              type: 'string',
-              options: {list: ['fullWidth', 'contained']},
-            }),
             defineField({name: 'mobileFullHeight', title: 'Mobile full height', type: 'boolean'}),
           ],
         }),
