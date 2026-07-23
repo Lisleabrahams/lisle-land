@@ -464,7 +464,7 @@ function FullWidthVideo({ src, alt, desktopWidth = '100' }) {
   )
 }
 
-export default function Portfolio({ introText, projects, clientName = '' }) {
+export default function Portfolio({ introText, projects, clientName = '', isPitch = false }) {
   const [displayedText, setDisplayedText] = useState('')
   const [showProjects, setShowProjects] = useState(false)
   const [expandedProject, setExpandedProject] = useState(null)
@@ -547,9 +547,13 @@ export default function Portfolio({ introText, projects, clientName = '' }) {
             if (!currentProject) return  // Guard clause
             
             const mediaItem = currentProject.media?.[index]
-            
+
             // Only update if this media item has a description AND belongs to current project
-            if (mediaItem?.description) {
+            if (isPitch) {
+              // Pitch pages: project Description always leads; captions never
+              // override it (belt-and-braces with the render-level guard below).
+              setCurrentDescription(currentProject.description || '')
+            } else if (mediaItem?.description) {
               setCurrentDescription(mediaItem.description)
               setIsTyping(true)
             } else if (index === 0) {
@@ -568,7 +572,7 @@ export default function Portfolio({ introText, projects, clientName = '' }) {
     return () => {
       observers.forEach(obs => obs.disconnect())
     }
-  }, [expandedProject, projects])
+  }, [expandedProject, projects, isPitch])
 
   // Initialize with real project description from Sanity
   useEffect(() => {
@@ -689,7 +693,7 @@ export default function Portfolio({ introText, projects, clientName = '' }) {
           fontFamily: '"Geist Mono", monospace',
           // Fluid type — ~10px on laptops, up to 18px on large external screens.
           fontSize: 'clamp(10px, 0.72vw, 18px)',
-          lineHeight: 1.1,
+          lineHeight: 1.3,
           fontWeight: 300
         }}>
           {/* Intro Text — stretched ~full width, name bolded */}
@@ -793,8 +797,12 @@ export default function Portfolio({ introText, projects, clientName = '' }) {
               }}>
                 {expandedProject && projects?.find(p => p._id === expandedProject) && (() => {
                   const project = projects.find(p => p._id === expandedProject)
-                  const displayText = currentDescription || project?.description || ''
-                  console.log('DISPLAYING:', { currentDescription, projectDescription: project?.description, displayText })
+                  // Pitch pages: always show the project's own Description. Media
+                  // captions (leftover placeholders) were stomping it via the
+                  // scroll observer. Main site keeps the caption-on-scroll behaviour.
+                  const displayText = isPitch
+                    ? (project?.description || '')
+                    : (currentDescription || project?.description || '')
                   return (
                     <div>
                       {displayText}
@@ -829,10 +837,10 @@ export default function Portfolio({ introText, projects, clientName = '' }) {
         minHeight: '100vh',
         backgroundColor: backgroundColor,
         transition: 'background-color 0.6s ease, filter 0.4s ease-in-out',
-        filter: transitionPhase !== 'none' ? 'blur(30px)' : 'blur(0px)',
+        filter: transitionPhase !== 'none' ? 'blur(30px)' : 'none',
         fontFamily: '"Geist Mono", monospace',
         fontSize: '12px',
-        lineHeight: 1.1,
+        lineHeight: 1.3,
         fontWeight: 300,
         color: '#1a1a1a',
         paddingTop: isMobile ? '20px' : '50vh',
@@ -851,6 +859,7 @@ export default function Portfolio({ introText, projects, clientName = '' }) {
             lineHeight: '16px',
             fontWeight: 300,
             maxWidth: 'calc(100vw - 24px)',
+            zIndex: 10001,
             color: '#1a1a1a',
             marginBottom: '20px'
           }}>
@@ -864,7 +873,7 @@ export default function Portfolio({ introText, projects, clientName = '' }) {
               position: 'sticky',
               top: 0,
               backgroundColor: 'transparent',
-              zIndex: 100,
+              zIndex: 10001,
               paddingTop: '12px',
               paddingBottom: '12px',
               paddingLeft: '12px',
