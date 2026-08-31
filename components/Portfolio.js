@@ -123,7 +123,7 @@ function HorizontalScrollImage({ src, alt }) {
   )
 }
 
-function ParallaxModule({ backgroundImage, backgroundImageMobile, foregroundImage, foregroundImageMobile, backgroundWidth = '100', backgroundPosition = 'center', foregroundWidth = '100', foregroundPosition = 'center', intensity = 5, alt }) {
+function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVideo, backgroundVideoMobile, foregroundImage, foregroundImageMobile, backgroundWidth = '100', backgroundPosition = 'center', foregroundWidth = '100', foregroundPosition = 'center', intensity = 5, alt }) {
   const containerRef = useRef(null)
   const [bgOffset, setBgOffset] = useState(0)
   const [fgOffset, setFgOffset] = useState(0)
@@ -170,6 +170,8 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, foregroundImag
   // Prefer the breakpoint-specific image, but fall back to the other one so a
   // missing field in Sanity never renders a broken <img>.
   const bgSrc = (isMobile ? backgroundImageMobile || backgroundImage : backgroundImage || backgroundImageMobile) || null
+  // A background video takes precedence over the background image when set.
+  const bgVideoSrc = (isMobile ? backgroundVideoMobile || backgroundVideo : backgroundVideo || backgroundVideoMobile) || null
   const fgSrc = (isMobile ? foregroundImageMobile || foregroundImage : foregroundImage || foregroundImageMobile) || null
 
   // Desktop-only width/position per layer (mobile stays full width, like the
@@ -194,7 +196,7 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, foregroundImag
       }}
     >
       {/* Background Layer */}
-      {bgSrc && <div style={{
+      {(bgVideoSrc || bgSrc) && <div style={{
         position: 'absolute',
         top: 0,
         ...(isMobile ? { left: 0 } : layerX(backgroundPosition)),
@@ -204,16 +206,33 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, foregroundImag
         willChange: 'transform',
         zIndex: 1
       }}>
-        <img
-          src={bgSrc}
-          alt={alt || 'Background layer'}
-          style={{
-            width: '100%',
-            height: 'auto',
-            objectFit: 'contain',
-            objectPosition: 'center'
-          }}
-        />
+        {bgVideoSrc ? (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            src={bgVideoSrc}
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'block',
+              objectFit: 'contain',
+              objectPosition: 'center'
+            }}
+          />
+        ) : (
+          <img
+            src={bgSrc}
+            alt={alt || 'Background layer'}
+            style={{
+              width: '100%',
+              height: 'auto',
+              objectFit: 'contain',
+              objectPosition: 'center'
+            }}
+          />
+        )}
       </div>}
 
       {/* Foreground Layer */}
@@ -1031,6 +1050,8 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                   <ParallaxModule
                     backgroundImage={media.backgroundImageUrl}
                     backgroundImageMobile={media.backgroundImageMobileUrl}
+                    backgroundVideo={media.backgroundVideoUrl}
+                    backgroundVideoMobile={media.backgroundVideoMobileUrl}
                     foregroundImage={media.foregroundImageUrl}
                     foregroundImageMobile={media.foregroundImageMobileUrl}
                     backgroundWidth={media.backgroundWidth || '100'}

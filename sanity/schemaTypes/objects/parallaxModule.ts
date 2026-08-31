@@ -15,6 +15,19 @@ export default defineType({
     defineField({name: 'backgroundImage', title: 'Background image', type: 'image', options: {hotspot: true}}),
     defineField({name: 'backgroundImageMobile', title: 'Background image (mobile)', type: 'image', options: {hotspot: true}}),
     defineField({
+      name: 'backgroundVideo',
+      title: 'Background video',
+      type: 'file',
+      description: 'Autoplaying, muted, looped. When set, used instead of the background image.',
+      options: {accept: 'video/*'},
+    }),
+    defineField({
+      name: 'backgroundVideoMobile',
+      title: 'Background video (mobile)',
+      type: 'file',
+      options: {accept: 'video/*'},
+    }),
+    defineField({
       name: 'backgroundWidth',
       title: 'Background width (%)',
       type: 'string',
