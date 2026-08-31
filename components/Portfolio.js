@@ -167,8 +167,10 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, foregroundImag
     return () => window.removeEventListener('scroll', handleScroll)
   }, [intensity])
 
-  const bgSrc = isMobile && backgroundImageMobile ? backgroundImageMobile : backgroundImage
-  const fgSrc = isMobile && foregroundImageMobile ? foregroundImageMobile : foregroundImage
+  // Prefer the breakpoint-specific image, but fall back to the other one so a
+  // missing field in Sanity never renders a broken <img>.
+  const bgSrc = (isMobile ? backgroundImageMobile || backgroundImage : backgroundImage || backgroundImageMobile) || null
+  const fgSrc = (isMobile ? foregroundImageMobile || foregroundImage : foregroundImage || foregroundImageMobile) || null
 
   return (
     <div
@@ -185,7 +187,7 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, foregroundImag
       }}
     >
       {/* Background Layer */}
-      <div style={{
+      {bgSrc && <div style={{
         position: 'absolute',
         top: 0,
         left: 0,
@@ -205,10 +207,10 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, foregroundImag
             objectPosition: 'center'
           }}
         />
-      </div>
+      </div>}
 
       {/* Foreground Layer */}
-      <div style={{
+      {fgSrc && <div style={{
         position: 'absolute',
         top: isMobile ? '0' : '50%',
         left: '50%',
@@ -233,7 +235,7 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, foregroundImag
             objectPosition: 'center'
           }}
         />
-      </div>
+      </div>}
     </div>
   )
 }

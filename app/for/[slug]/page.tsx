@@ -52,7 +52,7 @@ export default async function PitchPage({
   return (
     <>
       <Loader label={pitch.loaderCopy || undefined} boldName={pitch.clientName} />
-      <Portfolio introText={pitch.introText || undefined} projects={projects} clientName={pitch.clientName} />
+      <Portfolio introText={pitch.introText || undefined} projects={projects} clientName={pitch.clientName} isPitch />
     </>
   )
 }
