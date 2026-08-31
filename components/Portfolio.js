@@ -123,7 +123,7 @@ function HorizontalScrollImage({ src, alt }) {
   )
 }
 
-function ParallaxModule({ backgroundImage, backgroundImageMobile, foregroundImage, foregroundImageMobile, intensity = 5, alt }) {
+function ParallaxModule({ backgroundImage, backgroundImageMobile, foregroundImage, foregroundImageMobile, backgroundWidth = '100', backgroundPosition = 'center', foregroundWidth = '100', foregroundPosition = 'center', intensity = 5, alt }) {
   const containerRef = useRef(null)
   const [bgOffset, setBgOffset] = useState(0)
   const [fgOffset, setFgOffset] = useState(0)
@@ -172,6 +172,13 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, foregroundImag
   const bgSrc = (isMobile ? backgroundImageMobile || backgroundImage : backgroundImage || backgroundImageMobile) || null
   const fgSrc = (isMobile ? foregroundImageMobile || foregroundImage : foregroundImage || foregroundImageMobile) || null
 
+  // Desktop-only width/position per layer (mobile stays full width, like the
+  // singular image modules' "Desktop width (%)" control). 'center' keeps the
+  // pre-control behaviour, so existing modules render unchanged.
+  const layerX = (position) =>
+    position === 'left' ? { left: 0 } : position === 'right' ? { right: 0 } : { left: '50%' }
+  const centerShift = (position) => (position === 'center' ? 'translateX(-50%) ' : '')
+
   return (
     <div
       ref={containerRef}
@@ -190,10 +197,10 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, foregroundImag
       {bgSrc && <div style={{
         position: 'absolute',
         top: 0,
-        left: 0,
-        width: '100%',
+        ...(isMobile ? { left: 0 } : layerX(backgroundPosition)),
+        width: isMobile ? '100%' : `${backgroundWidth}%`,
         height: '100%',
-        transform: `translateY(${bgOffset}px)`,
+        transform: `${isMobile ? '' : centerShift(backgroundPosition)}translateY(${bgOffset}px)`,
         willChange: 'transform',
         zIndex: 1
       }}>
@@ -213,12 +220,12 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, foregroundImag
       {fgSrc && <div style={{
         position: 'absolute',
         top: isMobile ? '0' : '50%',
-        left: '50%',
-        width: '100%',
+        ...(isMobile ? { left: '50%' } : layerX(foregroundPosition)),
+        width: isMobile ? '100%' : `${foregroundWidth}%`,
         height: '100%',
         transform: isMobile 
           ? `translateX(-50%) translateY(${fgOffset}px)`
-          : `translate(-50%, -50%) translateY(${fgOffset}px)`,
+          : `${centerShift(foregroundPosition)}translateY(-50%) translateY(${fgOffset}px)`,
         willChange: 'transform',
         display: 'flex',
         alignItems: 'center',
@@ -1026,6 +1033,10 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                     backgroundImageMobile={media.backgroundImageMobileUrl}
                     foregroundImage={media.foregroundImageUrl}
                     foregroundImageMobile={media.foregroundImageMobileUrl}
+                    backgroundWidth={media.backgroundWidth || '100'}
+                    backgroundPosition={media.backgroundPosition || 'center'}
+                    foregroundWidth={media.foregroundWidth || '100'}
+                    foregroundPosition={media.foregroundPosition || 'center'}
                     intensity={media.intensity || 5}
                     alt={media.alt || ''}
                   />
