@@ -52,6 +52,21 @@ export default defineType({
               type: 'string',
               options: {list: ['100', '80', '60', '50', '40']},
             }),
+            defineField({
+              name: 'desktopPosition',
+              title: 'Desktop position',
+              type: 'string',
+              description: 'Desktop only. Defaults to centre.',
+              options: {
+                list: [
+                  {title: 'Left', value: 'left'},
+                  {title: 'Centre', value: 'center'},
+                  {title: 'Right', value: 'right'},
+                ],
+                layout: 'radio',
+                direction: 'horizontal',
+              },
+            }),
             defineField({name: 'mobileImage', title: 'Mobile image', type: 'image', options: {hotspot: true}}),
             defineField({name: 'mobileFullHeight', title: 'Mobile full height', type: 'boolean'}),
           ],

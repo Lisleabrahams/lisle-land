@@ -1150,7 +1150,11 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                   width: isMobile ? 'calc(100vw - 24px)' : `min(calc(100vw - 120px), ${media.desktopWidth || 100}%)`,
                   height: 'auto',
                   display: 'block',
+                  // Desktop-only horizontal position; centre is the default.
+                  // Left/right sit flush to the 60px page gutters.
                   margin: '0 auto',
+                  ...(!isMobile && media.desktopPosition === 'left' ? { marginLeft: '60px', marginRight: 'auto' } : {}),
+                  ...(!isMobile && media.desktopPosition === 'right' ? { marginLeft: 'auto', marginRight: '60px' } : {}),
                   marginBottom: isMobile ? '16px' : '30px',
                   objectFit: 'contain',
                   filter: `blur(${imageBlurs[imgNum] || 0}px)`,
