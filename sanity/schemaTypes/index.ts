@@ -5,6 +5,7 @@ import splitScreenModule from './objects/splitScreenModule'
 import horizontalImage from './objects/horizontalImage'
 import backgroundColorTrigger from './objects/backgroundColorTrigger'
 import spacer from './objects/spacer'
+import negativeSpacer from './objects/negativeSpacer'
 
 export const schemaTypes = [
   // Documents
@@ -16,4 +17,5 @@ export const schemaTypes = [
   horizontalImage,
   backgroundColorTrigger,
   spacer,
+  negativeSpacer,
 ]

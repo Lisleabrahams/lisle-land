@@ -36,6 +36,7 @@ export default defineType({
         defineArrayMember({type: 'horizontalImage'}),
         defineArrayMember({type: 'backgroundColorTrigger'}),
         defineArrayMember({type: 'spacer'}),
+        defineArrayMember({type: 'negativeSpacer'}),
         // Extended built-in image — stored _type "image".
         defineArrayMember({
           type: 'image',

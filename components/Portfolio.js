@@ -1015,6 +1015,24 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
               )
             }
             
+            // NEGATIVE SPACER — pulls the following module up (overlap).
+            // Amount is % of the viewport height; later modules paint on top.
+            if (media._type === 'negativeSpacer') {
+              const pull = isMobile
+                ? (media.mobileAmount ?? media.desktopAmount ?? 20)
+                : (media.desktopAmount ?? 20)
+              return (
+                <div
+                  key={`${expandedProject}-${imgNum}`}
+                  style={{
+                    height: 0,
+                    marginTop: `-${pull}vh`,
+                    width: '100%'
+                  }}
+                />
+              )
+            }
+
             // HORIZONTAL SCROLL IMAGE
             if (media._type === 'horizontalImage') {
               return (
