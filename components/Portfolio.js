@@ -123,7 +123,7 @@ function HorizontalScrollImage({ src, alt }) {
   )
 }
 
-function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVideo, backgroundVideoMobile, foregroundImage, foregroundImageMobile, backgroundWidth = '100', backgroundPosition = 'center', foregroundWidth = '100', foregroundPosition = 'center', intensity = 5, alt }) {
+function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVideo, backgroundVideoMobile, foregroundImage, foregroundImageMobile, foregroundVideo, foregroundVideoMobile, backgroundWidth = '100', backgroundPosition = 'center', foregroundWidth = '100', foregroundPosition = 'center', intensity = 5, alt }) {
   const containerRef = useRef(null)
   const [bgOffset, setBgOffset] = useState(0)
   const [fgOffset, setFgOffset] = useState(0)
@@ -173,6 +173,8 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
   // A background video takes precedence over the background image when set.
   const bgVideoSrc = (isMobile ? backgroundVideoMobile || backgroundVideo : backgroundVideo || backgroundVideoMobile) || null
   const fgSrc = (isMobile ? foregroundImageMobile || foregroundImage : foregroundImage || foregroundImageMobile) || null
+  // A foreground video takes precedence over the foreground image when set.
+  const fgVideoSrc = (isMobile ? foregroundVideoMobile || foregroundVideo : foregroundVideo || foregroundVideoMobile) || null
 
   // Desktop-only width/position per layer (mobile stays full width, like the
   // singular image modules' "Desktop width (%)" control). 'center' keeps the
@@ -236,7 +238,7 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
       </div>}
 
       {/* Foreground Layer */}
-      {fgSrc && <div style={{
+      {(fgVideoSrc || fgSrc) && <div style={{
         position: 'absolute',
         top: isMobile ? '0' : '50%',
         ...(isMobile ? { left: '50%' } : layerX(foregroundPosition)),
@@ -251,16 +253,33 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
         justifyContent: 'center',
         zIndex: 2
       }}>
-        <img
-          src={fgSrc}
-          alt={alt || 'Foreground layer'}
-          style={{
-            width: '100%',
-            height: 'auto',
-            objectFit: 'contain',
-            objectPosition: 'center'
-          }}
-        />
+        {fgVideoSrc ? (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            src={fgVideoSrc}
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'block',
+              objectFit: 'contain',
+              objectPosition: 'center'
+            }}
+          />
+        ) : (
+          <img
+            src={fgSrc}
+            alt={alt || 'Foreground layer'}
+            style={{
+              width: '100%',
+              height: 'auto',
+              objectFit: 'contain',
+              objectPosition: 'center'
+            }}
+          />
+        )}
       </div>}
     </div>
   )
@@ -1105,6 +1124,8 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                     backgroundVideoMobile={media.backgroundVideoMobileUrl}
                     foregroundImage={media.foregroundImageUrl}
                     foregroundImageMobile={media.foregroundImageMobileUrl}
+                    foregroundVideo={media.foregroundVideoUrl}
+                    foregroundVideoMobile={media.foregroundVideoMobileUrl}
                     backgroundWidth={media.backgroundWidth || '100'}
                     backgroundPosition={media.backgroundPosition || 'center'}
                     foregroundWidth={media.foregroundWidth || '100'}

@@ -25,6 +25,8 @@ async function getData() {
       "backgroundVideoMobileUrl": backgroundVideoMobile.asset->url,
       "foregroundImageUrl": foregroundImage.asset->url,
       "foregroundImageMobileUrl": foregroundImageMobile.asset->url,
+      "foregroundVideoUrl": foregroundVideo.asset->url,
+      "foregroundVideoMobileUrl": foregroundVideoMobile.asset->url,
       intensity,
       "leftImageUrl": leftImage.asset->url,
       "rightImageUrl": rightImage.asset->url,

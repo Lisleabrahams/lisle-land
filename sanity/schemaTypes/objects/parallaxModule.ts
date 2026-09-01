@@ -44,6 +44,19 @@ export default defineType({
     defineField({name: 'foregroundImage', title: 'Foreground image', type: 'image', options: {hotspot: true}}),
     defineField({name: 'foregroundImageMobile', title: 'Foreground image (mobile)', type: 'image', options: {hotspot: true}}),
     defineField({
+      name: 'foregroundVideo',
+      title: 'Foreground video',
+      type: 'file',
+      description: 'Autoplaying, muted, looped. When set, used instead of the foreground image.',
+      options: {accept: 'video/*'},
+    }),
+    defineField({
+      name: 'foregroundVideoMobile',
+      title: 'Foreground video (mobile)',
+      type: 'file',
+      options: {accept: 'video/*'},
+    }),
+    defineField({
       name: 'foregroundWidth',
       title: 'Foreground width (%)',
       type: 'string',
