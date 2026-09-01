@@ -51,7 +51,7 @@ export default defineType({
               name: 'desktopWidth',
               title: 'Desktop width (%)',
               type: 'string',
-              options: {list: ['100', '80', '60', '50', '40']},
+              options: {list: ['100', '80', '60', '50', '40', '30', '20', '10']},
             }),
             defineField({
               name: 'parallax',
@@ -89,7 +89,22 @@ export default defineType({
               name: 'desktopWidth',
               title: 'Desktop width (%)',
               type: 'string',
-              options: {list: ['100', '80', '60', '50', '40']},
+              options: {list: ['100', '80', '60', '50', '40', '30', '20', '10']},
+            }),
+            defineField({
+              name: 'desktopPosition',
+              title: 'Desktop position',
+              type: 'string',
+              description: 'Desktop only. Defaults to centre.',
+              options: {
+                list: [
+                  {title: 'Left', value: 'left'},
+                  {title: 'Centre', value: 'center'},
+                  {title: 'Right', value: 'right'},
+                ],
+                layout: 'radio',
+                direction: 'horizontal',
+              },
             }),
             defineField({
               name: 'parallax',

@@ -506,7 +506,7 @@ function ScrollParallaxImage({ amount = 0, children }) {
   )
 }
 
-function FullWidthVideo({ src, alt, desktopWidth = '100' }) {
+function FullWidthVideo({ src, alt, desktopWidth = '100', desktopPosition = 'center' }) {
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -520,9 +520,11 @@ function FullWidthVideo({ src, alt, desktopWidth = '100' }) {
     <div style={{
       width: isMobile ? 'calc(100vw - 24px)' : `${desktopWidth}%`,
       maxWidth: isMobile ? 'none' : 'calc(100vw - 120px)',
+      // Desktop-only horizontal position; centre is the default.
+      // Left/right sit flush to the 60px page gutters.
       margin: '0 auto',
-      marginLeft: isMobile ? '12px' : 'auto',
-      marginRight: isMobile ? '12px' : 'auto',
+      marginLeft: isMobile ? '12px' : (desktopPosition === 'left' ? '60px' : 'auto'),
+      marginRight: isMobile ? '12px' : (desktopPosition === 'right' ? '60px' : 'auto'),
       marginBottom: isMobile ? '16px' : '30px'
     }}>
       <video
@@ -1203,6 +1205,7 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                     src={media.asset.url}
                     alt={media.alt || ''}
                     desktopWidth={media.desktopWidth || '100'}
+                    desktopPosition={media.desktopPosition || 'center'}
                   />
                 </ScrollParallaxImage>
               )
