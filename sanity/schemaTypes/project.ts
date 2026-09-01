@@ -54,6 +54,13 @@ export default defineType({
               options: {list: ['100', '80', '60', '50', '40']},
             }),
             defineField({
+              name: 'parallax',
+              title: 'Parallax',
+              type: 'number',
+              description: 'Scroll drift. Empty or 0 = static. 5 = parallax-module baseline, higher = more. Negative drifts the opposite direction — good for overlapped images pulling apart.',
+              validation: (R) => R.min(-20).max(20),
+            }),
+            defineField({
               name: 'desktopPosition',
               title: 'Desktop position',
               type: 'string',

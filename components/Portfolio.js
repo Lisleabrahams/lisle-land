@@ -454,6 +454,39 @@ function SplitScreenModule({ leftImage, rightImage, fullBleedSide, parallaxInten
   )
 }
 
+// Scroll-driven drift wrapper for singular image modules. The outer div is
+// the (untransformed) measuring element so the offset never feeds back into
+// its own rect; the inner div carries the transform. amount 0 renders inert.
+function ScrollParallaxImage({ amount = 0, children }) {
+  const measureRef = useRef(null)
+  const [offset, setOffset] = useState(0)
+
+  useEffect(() => {
+    if (!amount) return
+    const handleScroll = () => {
+      if (!measureRef.current) return
+      const rect = measureRef.current.getBoundingClientRect()
+      const viewportHeight = window.innerHeight
+      const progress = (viewportHeight - rect.top) / (viewportHeight + rect.height)
+      const normalized = Math.max(-0.5, Math.min(1.5, progress))
+      // Same scale as the parallax module background: 5 = baseline.
+      setOffset(normalized * -100 * (amount / 5))
+    }
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [amount])
+
+  if (!amount) return children
+  return (
+    <div ref={measureRef}>
+      <div style={{ transform: `translateY(${offset}px)`, willChange: 'transform' }}>
+        {children}
+      </div>
+    </div>
+  )
+}
+
 function FullWidthVideo({ src, alt, desktopWidth = '100' }) {
   const [isMobile, setIsMobile] = useState(false)
 
@@ -1159,8 +1192,8 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
             if (!media.asset?.url) return null  // Skip if no URL
 
             return (
+              <ScrollParallaxImage key={`${expandedProject}-${imgNum}`} amount={media.parallax || 0}>
               <img
-                key={`${expandedProject}-${imgNum}`}
                 ref={(el) => { if (el) mediaRefs.current[imgNum] = el }}
                 src={isMobile && media.mobileImageUrl ? media.mobileImageUrl : media.asset.url}
                 alt={media.alt || `Project image ${imgNum + 1}`}
@@ -1179,6 +1212,7 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                   transition: 'filter 0.05s linear'
                 }}
               />
+              </ScrollParallaxImage>
             )
           })}
 
