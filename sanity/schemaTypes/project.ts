@@ -91,6 +91,13 @@ export default defineType({
               type: 'string',
               options: {list: ['100', '80', '60', '50', '40']},
             }),
+            defineField({
+              name: 'parallax',
+              title: 'Parallax',
+              type: 'number',
+              description: 'Scroll drift. Empty or 0 = static. 5 = parallax-module baseline, higher = more. Negative drifts the opposite direction.',
+              validation: (R) => R.min(-20).max(20),
+            }),
             defineField({name: 'mobileFullHeight', title: 'Mobile full height', type: 'boolean'}),
           ],
         }),

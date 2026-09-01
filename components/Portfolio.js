@@ -535,10 +535,8 @@ function FullWidthVideo({ src, alt, desktopWidth = '100' }) {
           height: 'auto',
           display: 'block'
         }}
-      >
-        <source src={src} type="video/webm" />
-        <source src={src} type="video/mp4" />
-      </video>
+        src={src}
+      />
     </div>
   )
 }
@@ -1172,8 +1170,8 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
               // Mobile: 9:16 cropped full-height video when flagged in Sanity
               if (isMobile && media.mobileFullHeight === true) {
                 return (
+                  <ScrollParallaxImage key={`${expandedProject}-${imgNum}`} amount={media.parallax || 0}>
                   <div 
-                    key={`${expandedProject}-${imgNum}`}
                     ref={(el) => { if (el) mediaRefs.current[imgNum] = el }}
                     style={{
                       width: '100vw',
@@ -1192,20 +1190,21 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                         height: '100%',
                         objectFit: 'cover'
                       }}
-                    >
-                      <source src={media.asset.url} type="video/mp4" />
-                    </video>
+                      src={media.asset.url}
+                    />
                   </div>
+                  </ScrollParallaxImage>
                 )
               }
 
               return (
-                <FullWidthVideo
-                  key={`${expandedProject}-${imgNum}`}
-                  src={media.asset.url}
-                  alt={media.alt || ''}
-                  desktopWidth={media.desktopWidth || '100'}
-                />
+                <ScrollParallaxImage key={`${expandedProject}-${imgNum}`} amount={media.parallax || 0}>
+                  <FullWidthVideo
+                    src={media.asset.url}
+                    alt={media.alt || ''}
+                    desktopWidth={media.desktopWidth || '100'}
+                  />
+                </ScrollParallaxImage>
               )
             }
             
