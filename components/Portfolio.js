@@ -1198,6 +1198,9 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
             if (media._type === 'file' || media.asset?.mimeType?.startsWith('video/')) {
               if (!media.asset?.url) return null  // Skip if no file uploaded
 
+              // Mobile-specific video when provided; falls back to the main one.
+              const videoSrc = isMobile && media.mobileVideoUrl ? media.mobileVideoUrl : media.asset.url
+
               // Mobile: 9:16 cropped full-height video when flagged in Sanity
               if (isMobile && media.mobileFullHeight === true) {
                 return (
@@ -1221,7 +1224,7 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                         height: '100%',
                         objectFit: 'cover'
                       }}
-                      src={media.asset.url}
+                      src={videoSrc}
                     />
                   </div>
                   </ScrollParallaxImage>
@@ -1231,7 +1234,7 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
               return (
                 <ScrollParallaxImage key={`${expandedProject}-${imgNum}`} amount={media.parallax || 0}>
                   <FullWidthVideo
-                    src={media.asset.url}
+                    src={videoSrc}
                     alt={media.alt || ''}
                     desktopWidth={media.desktopWidth || '100'}
                     desktopPosition={media.desktopPosition || 'center'}

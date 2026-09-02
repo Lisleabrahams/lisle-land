@@ -19,6 +19,7 @@ async function getData() {
       description,
       "imageUrl": image.asset->url,
       "mobileImageUrl": mobileImage.asset->url,
+      "mobileVideoUrl": mobileVideo.asset->url,
       "backgroundImageUrl": backgroundImage.asset->url,
       "backgroundImageMobileUrl": backgroundImageMobile.asset->url,
       "backgroundVideoUrl": backgroundVideo.asset->url,

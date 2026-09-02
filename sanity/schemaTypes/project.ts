@@ -113,6 +113,13 @@ export default defineType({
               description: 'Scroll drift. Empty or 0 = static. 5 = parallax-module baseline, higher = more. Negative drifts the opposite direction.',
               validation: (R) => R.min(-20).max(20),
             }),
+            defineField({
+              name: 'mobileVideo',
+              title: 'Mobile video',
+              type: 'file',
+              options: {accept: 'video/*'},
+              description: 'Optional mobile-specific video. Falls back to the main video when empty.',
+            }),
             defineField({name: 'mobileFullHeight', title: 'Mobile full height', type: 'boolean'}),
           ],
           preview: {
