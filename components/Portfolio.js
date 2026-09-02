@@ -181,6 +181,13 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
   const layerX = (position) =>
     position === 'left' ? { left: 0 } : position === 'right' ? { right: 0 } : { left: '50%' }
   const centerShift = (position) => (position === 'center' ? 'translateX(-50%) ' : '')
+  // Mobile sizing: the container used to be minHeight 100vh with absolute
+  // layers, which left huge gaps (short art) or collisions (tall art) on
+  // phones. Now the background renders IN FLOW on mobile so the module is
+  // exactly as tall as its art; the foreground overlays it. With no
+  // background, the foreground becomes the in-flow layer instead.
+  const hasBg = !!(bgVideoSrc || bgSrc)
+  const fgInFlow = isMobile && !hasBg
 
   return (
     <div
@@ -188,7 +195,7 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
       style={{
         position: 'relative',
         width: isMobile ? 'calc(100vw - 24px)' : 'calc(100vw - 120px)',
-        minHeight: '100vh',
+        minHeight: isMobile ? 0 : '100vh',
         marginLeft: isMobile ? '12px' : '60px',
         marginRight: isMobile ? '12px' : '60px',
         marginBottom: isMobile ? '16px' : '100px',
@@ -197,12 +204,11 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
       }}
     >
       {/* Background Layer */}
-      {(bgVideoSrc || bgSrc) && <div style={{
-        position: 'absolute',
-        top: 0,
-        ...(isMobile ? { left: 0 } : layerX(backgroundPosition)),
+      {hasBg && <div style={{
+        position: isMobile ? 'relative' : 'absolute',
+        ...(isMobile ? {} : { top: 0, ...layerX(backgroundPosition) }),
         width: isMobile ? '100%' : `${backgroundWidth}%`,
-        height: '100%',
+        height: isMobile ? 'auto' : '100%',
         transform: `${isMobile ? '' : centerShift(backgroundPosition)}translateY(${bgOffset}px)`,
         willChange: 'transform',
         zIndex: 1
@@ -238,14 +244,17 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
 
       {/* Foreground Layer */}
       {(fgVideoSrc || fgSrc) && <div style={{
-        position: 'absolute',
-        top: isMobile ? '0' : '50%',
-        ...(isMobile ? { left: '50%' } : layerX(foregroundPosition)),
+        position: fgInFlow ? 'relative' : 'absolute',
+        ...(fgInFlow ? {} : isMobile
+          ? { top: '0', left: '50%' }
+          : { top: '50%', ...layerX(foregroundPosition) }),
         width: isMobile ? '100%' : `${foregroundWidth}%`,
-        height: '100%',
-        transform: isMobile 
-          ? `translateX(-50%) translateY(${fgOffset}px)`
-          : `${centerShift(foregroundPosition)}translateY(-50%) translateY(${fgOffset}px)`,
+        height: fgInFlow ? 'auto' : '100%',
+        transform: fgInFlow
+          ? `translateY(${fgOffset}px)`
+          : isMobile
+            ? `translateX(-50%) translateY(${fgOffset}px)`
+            : `${centerShift(foregroundPosition)}translateY(-50%) translateY(${fgOffset}px)`,
         willChange: 'transform',
         display: 'flex',
         alignItems: 'center',
