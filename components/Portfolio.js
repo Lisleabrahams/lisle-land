@@ -4,6 +4,16 @@ import { useState, useEffect, useRef } from 'react'
 import { boldNames } from './boldText'
 
 // Horizontal Scroll Image Component
+// Parallax intensity curve, shared by every parallax mechanism: linear up to
+// 5 (the baseline) so subtle settings stay subtle, quadratic above it so the
+// top of the scale gets properly wild. 5 = 1x, 10 = 4x, 15 = 9x, 20 = 16x.
+// Sign is preserved for reverse-direction drift.
+function parallaxMultiplier(intensity) {
+  const i = Math.abs(intensity)
+  const m = i <= 5 ? i / 5 : Math.pow(i / 5, 2)
+  return intensity < 0 ? -m : m
+}
+
 function HorizontalScrollImage({ src, alt, mobileSrc, desktopHeight = '100', mobileHeight = '70' }) {
   const containerRef = useRef(null)
   const imageRef = useRef(null)
@@ -149,8 +159,8 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
       const scrollProgress = (viewportHeight - rect.top) / (viewportHeight + rect.height)
       const normalizedProgress = Math.max(-0.5, Math.min(1.5, scrollProgress))
       
-      // Intensity affects how much separation there is (0-10 scale)
-      const multiplier = intensity / 5 // 5 is baseline, so 5 = 1x, 10 = 2x, 0 = 0x
+      // Intensity curve: linear to 5, quadratic above (20 = 16x baseline)
+      const multiplier = parallaxMultiplier(intensity)
       
       // Background moves slower (negative direction)
       const bgMovement = normalizedProgress * -100 * multiplier
@@ -340,7 +350,7 @@ function SplitScreenModule({ leftImage, rightImage, fullBleedSide, parallaxInten
       const normalizedProgress = Math.max(-0.5, Math.min(1.5, scrollProgress))
       
       // Intensity multiplier (0-10 scale, 5 = baseline)
-      const multiplier = parallaxIntensity / 5
+      const multiplier = parallaxMultiplier(parallaxIntensity)
       
       // Full bleed side moves slower
       const fullBleedMovement = normalizedProgress * -80 * multiplier
@@ -515,8 +525,8 @@ function ScrollParallaxImage({ amount = 0, children }) {
       const viewportHeight = window.innerHeight
       const progress = (viewportHeight - rect.top) / (viewportHeight + rect.height)
       const normalized = Math.max(-0.5, Math.min(1.5, progress))
-      // Same scale as the parallax module background: 5 = baseline.
-      setOffset(normalized * -100 * (amount / 5))
+      // Same curve as the parallax module: linear to 5, quadratic above.
+      setOffset(normalized * -100 * parallaxMultiplier(amount))
     }
     handleScroll()
     window.addEventListener('scroll', handleScroll, { passive: true })
