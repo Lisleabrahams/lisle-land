@@ -168,12 +168,26 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
 
   // Prefer the breakpoint-specific image, but fall back to the other one so a
   // missing field in Sanity never renders a broken <img>.
-  const bgSrc = (isMobile ? backgroundImageMobile || backgroundImage : backgroundImage || backgroundImageMobile) || null
-  // A background video takes precedence over the background image when set.
-  const bgVideoSrc = (isMobile ? backgroundVideoMobile || backgroundVideo : backgroundVideo || backgroundVideoMobile) || null
-  const fgSrc = (isMobile ? foregroundImageMobile || foregroundImage : foregroundImage || foregroundImageMobile) || null
-  // A foreground video takes precedence over the foreground image when set.
-  const fgVideoSrc = (isMobile ? foregroundVideoMobile || foregroundVideo : foregroundVideo || foregroundVideoMobile) || null
+  // Layer media selection: the most breakpoint-specific asset wins, so a
+  // desktop video never overrides a deliberate mobile image (or vice versa).
+  // Within the same breakpoint, video beats image; with nothing set for this
+  // breakpoint, the other breakpoint's assets fall back (video first).
+  const pickMedia = (ownVideo, ownImage, otherVideo, otherImage) =>
+    ownVideo ? { video: ownVideo }
+    : ownImage ? { image: ownImage }
+    : otherVideo ? { video: otherVideo }
+    : otherImage ? { image: otherImage }
+    : null
+  const bgMedia = isMobile
+    ? pickMedia(backgroundVideoMobile, backgroundImageMobile, backgroundVideo, backgroundImage)
+    : pickMedia(backgroundVideo, backgroundImage, backgroundVideoMobile, backgroundImageMobile)
+  const fgMedia = isMobile
+    ? pickMedia(foregroundVideoMobile, foregroundImageMobile, foregroundVideo, foregroundImage)
+    : pickMedia(foregroundVideo, foregroundImage, foregroundVideoMobile, foregroundImageMobile)
+  const bgSrc = bgMedia?.image || null
+  const bgVideoSrc = bgMedia?.video || null
+  const fgSrc = fgMedia?.image || null
+  const fgVideoSrc = fgMedia?.video || null
 
   // Desktop-only width/position per layer (mobile stays full width, like the
   // singular image modules' "Desktop width (%)" control). 'center' keeps the
