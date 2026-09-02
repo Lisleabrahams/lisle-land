@@ -94,8 +94,8 @@ export default defineType({
       name: 'mobileLayerGap',
       title: 'Gap between layers (mobile, %)',
       type: 'number',
-      description: 'Vertical space between the 1st (background) and 2nd (foreground) art on mobile, as % of the screen. Negative pulls the 2nd up over the 1st (e.g. -30); 50 = half a screen of air between them. Blank = default overlay layout.',
-      validation: (R) => R.min(-100).max(150),
+      description: 'Measured from the two arts touching edge-to-edge (0). Positive = air between them (50 = half a screen); negative = the 2nd overlaps the 1st (-50 = half a screen of overlap, -150 = almost fully on top). Blank = classic overlay (2nd fully on top of 1st).',
+      validation: (R) => R.min(-200).max(150),
       fieldset: 'mobile',
     }),
     // ---------- Shared ----------
