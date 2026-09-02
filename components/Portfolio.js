@@ -1095,8 +1095,11 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
             // NEGATIVE SPACER — pulls the following module up (overlap).
             // Amount is % of the viewport height; later modules paint on top.
             if (media._type === 'negativeSpacer') {
+              // Mobile pulls are opt-in: desktop pull distances are tuned
+              // against desktop-sized modules and wreck the compact mobile
+              // flow, so an empty mobile value means NO pull on mobile.
               const pull = isMobile
-                ? (media.mobileAmount ?? media.desktopAmount ?? 20)
+                ? (media.mobileAmount ?? 0)
                 : (media.desktopAmount ?? 20)
               return (
                 <div

@@ -17,7 +17,7 @@ export default defineType({
       name: 'mobileAmount',
       title: 'Pull up — mobile (%)',
       type: 'number',
-      description: 'Mobile override. Leave empty to use the desktop value.',
+      description: 'Mobile pull-up. Empty = no pull on mobile (mobile reflows differently, so pulls are opt-in per breakpoint).',
       validation: (R) => R.min(0).max(100),
     }),
   ],
