@@ -115,6 +115,25 @@ export default defineType({
             }),
             defineField({name: 'mobileFullHeight', title: 'Mobile full height', type: 'boolean'}),
           ],
+          preview: {
+            select: {
+              filename: 'asset.originalFilename',
+              width: 'desktopWidth',
+              position: 'desktopPosition',
+              parallax: 'parallax',
+            },
+            prepare: ({filename, width, position, parallax}) => {
+              const bits = [
+                width ? `${width}%` : null,
+                position && position !== 'center' ? position : null,
+                parallax ? `parallax ${parallax}` : null,
+              ].filter(Boolean)
+              return {
+                title: filename || 'Video',
+                subtitle: bits.length ? bits.join(' · ') : 'video',
+              }
+            },
+          },
         }),
       ],
     }),
