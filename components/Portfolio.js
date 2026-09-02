@@ -17,10 +17,10 @@ function HorizontalScrollImage({ src, alt, mobileSrc }) {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Desktop: scroll-based horizontal movement
+  // Scroll-based horizontal movement — both breakpoints. Mobile used to be a
+  // native swipe strip; now it slides sideways as the page scrolls, same as
+  // desktop, just in normal flow rather than a 200vh sticky pin.
   useEffect(() => {
-    if (isMobile) return
-    
     const handleScroll = () => {
       if (!containerRef.current || !imageRef.current) return
 
@@ -52,23 +52,20 @@ function HorizontalScrollImage({ src, alt, mobileSrc }) {
     }
   }, [isMobile])
 
-  // MOBILE LAYOUT - Native horizontal scroll
+  // MOBILE LAYOUT — scroll-driven slide (window is clipped, image translates)
   if (isMobile) {
     return (
       <div
+        ref={containerRef}
         className="horizontal-scroll-mobile"
         style={{
           width: '100vw',
-          overflowX: 'auto',
-          overflowY: 'hidden',
-          WebkitOverflowScrolling: 'touch',
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-          paddingLeft: '196px',
+          overflow: 'hidden',
           marginBottom: '16px'
         }}
       >
         <img
+          ref={imageRef}
           src={mobileSrc || src}
           alt={alt}
           style={{
@@ -76,7 +73,9 @@ function HorizontalScrollImage({ src, alt, mobileSrc }) {
             width: 'auto',
             maxWidth: 'none',
             objectFit: 'cover',
-            display: 'block'
+            display: 'block',
+            transform: `translateX(${offset}px)`,
+            willChange: 'transform'
           }}
         />
       </div>
