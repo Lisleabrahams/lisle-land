@@ -1,4 +1,5 @@
 import {defineType, defineField} from 'sanity'
+import {HexColorInput} from '../../components/HexColorInput'
 
 export default defineType({
   name: 'backgroundColorTrigger',
@@ -10,7 +11,8 @@ export default defineType({
       name: 'quickPresets',
       title: 'Background colour',
       type: 'string',
-      description: 'Hex value, e.g. #000000 or #ffffff.',
+      description: 'Pick with the swatch or type a hex value, e.g. #000000 or #ffffff.',
+      components: {input: HexColorInput},
     }),
     defineField({
       name: 'activationPoint',
