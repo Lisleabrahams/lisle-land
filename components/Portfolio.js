@@ -122,7 +122,7 @@ function HorizontalScrollImage({ src, alt, mobileSrc }) {
   )
 }
 
-function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVideo, backgroundVideoMobile, foregroundImage, foregroundImageMobile, foregroundVideo, foregroundVideoMobile, backgroundWidth = '100', backgroundPosition = 'center', foregroundWidth = '100', foregroundPosition = 'center', intensity = 5, alt }) {
+function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVideo, backgroundVideoMobile, foregroundImage, foregroundImageMobile, foregroundVideo, foregroundVideoMobile, backgroundMobile, foregroundMobile, backgroundWidth = '100', backgroundPosition = 'center', foregroundWidth = '100', foregroundPosition = 'center', mobileSpaceBelow, intensity = 5, alt }) {
   const containerRef = useRef(null)
   const [bgOffset, setBgOffset] = useState(0)
   const [fgOffset, setFgOffset] = useState(0)
@@ -178,11 +178,16 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
     : otherVideo ? { video: otherVideo }
     : otherImage ? { image: otherImage }
     : null
+  // Combined mobile slots ({url, mime}) accept image OR video in one upload
+  // and take top priority on mobile; legacy per-type mobile fields still work
+  // as the next fallback.
+  const combined = (slot) =>
+    slot?.url ? (slot.mime?.startsWith('video/') ? { video: slot.url } : { image: slot.url }) : null
   const bgMedia = isMobile
-    ? pickMedia(backgroundVideoMobile, backgroundImageMobile, backgroundVideo, backgroundImage)
+    ? (combined(backgroundMobile) || pickMedia(backgroundVideoMobile, backgroundImageMobile, backgroundVideo, backgroundImage))
     : pickMedia(backgroundVideo, backgroundImage, backgroundVideoMobile, backgroundImageMobile)
   const fgMedia = isMobile
-    ? pickMedia(foregroundVideoMobile, foregroundImageMobile, foregroundVideo, foregroundImage)
+    ? (combined(foregroundMobile) || pickMedia(foregroundVideoMobile, foregroundImageMobile, foregroundVideo, foregroundImage))
     : pickMedia(foregroundVideo, foregroundImage, foregroundVideoMobile, foregroundImageMobile)
   const bgSrc = bgMedia?.image || null
   const bgVideoSrc = bgMedia?.video || null
@@ -212,7 +217,7 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
         minHeight: isMobile ? 0 : '100vh',
         marginLeft: isMobile ? '12px' : '60px',
         marginRight: isMobile ? '12px' : '60px',
-        marginBottom: isMobile ? '16px' : '100px',
+        marginBottom: isMobile ? `${mobileSpaceBelow ?? 16}px` : '100px',
         overflow: 'visible',
         backgroundColor: '#fff'
       }}
@@ -1154,6 +1159,9 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                     foregroundImageMobile={media.foregroundImageMobileUrl}
                     foregroundVideo={media.foregroundVideoUrl}
                     foregroundVideoMobile={media.foregroundVideoMobileUrl}
+                    backgroundMobile={{ url: media.backgroundMobileUrl, mime: media.backgroundMobileMime }}
+                    foregroundMobile={{ url: media.foregroundMobileUrl, mime: media.foregroundMobileMime }}
+                    mobileSpaceBelow={media.mobileSpaceBelow}
                     backgroundWidth={media.backgroundWidth || '100'}
                     backgroundPosition={media.backgroundPosition || 'center'}
                     foregroundWidth={media.foregroundWidth || '100'}
