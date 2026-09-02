@@ -12,6 +12,13 @@ export default defineType({
       options: {hotspot: true},
       description: 'A wide image that scrolls horizontally as the page scrolls.',
     }),
+    defineField({
+      name: 'mobileImage',
+      title: 'Mobile image',
+      type: 'image',
+      options: {hotspot: true},
+      description: 'Optional mobile-specific image. Falls back to the wide image when empty.',
+    }),
   ],
   preview: {
     select: {media: 'image'},

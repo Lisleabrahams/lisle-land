@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { boldNames } from './boldText'
 
 // Horizontal Scroll Image Component
-function HorizontalScrollImage({ src, alt }) {
+function HorizontalScrollImage({ src, alt, mobileSrc }) {
   const containerRef = useRef(null)
   const imageRef = useRef(null)
   const [offset, setOffset] = useState(0)
@@ -69,7 +69,7 @@ function HorizontalScrollImage({ src, alt }) {
         }}
       >
         <img
-          src={src}
+          src={mobileSrc || src}
           alt={alt}
           style={{
             height: '70vh',
@@ -1050,6 +1050,9 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
             
             // SPACER MODULE
             if (media._type === 'spacer') {
+              const appliesTo = media.appliesTo || 'both'
+              if (isMobile && appliesTo === 'desktop') return null
+              if (!isMobile && appliesTo === 'mobile') return null
               const heights = {
                 small: '30px',
                 medium: '60px',
@@ -1099,6 +1102,7 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                 >
                   <HorizontalScrollImage
                     src={media.imageUrl || media.image?.asset?.url}
+                    mobileSrc={media.mobileImageUrl}
                     alt={media.alt || ''}
                   />
                 </div>
