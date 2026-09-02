@@ -1075,17 +1075,16 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
               const appliesTo = media.appliesTo || 'both'
               if (isMobile && appliesTo === 'desktop') return null
               if (!isMobile && appliesTo === 'mobile') return null
-              const heights = {
-                small: '30px',
-                medium: '60px',
-                large: '120px',
-                xlarge: '200px'
-              }
+              // Mobile gets its own, clearly stepped scale — 30/60/200 reads
+              // as near-identical next to the 16px module margins on a phone.
+              const heights = isMobile
+                ? { small: '16px', medium: '80px', large: '150px', xlarge: '240px' }
+                : { small: '30px', medium: '60px', large: '120px', xlarge: '200px' }
               return (
                 <div 
                   key={`${expandedProject}-${imgNum}`}
                   style={{
-                    height: heights[media.size] || '60px',
+                    height: heights[media.size] || (isMobile ? '80px' : '60px'),
                     width: '100%'
                   }}
                 />
