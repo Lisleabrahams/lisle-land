@@ -12,6 +12,12 @@ export default defineType({
   title: 'Parallax module',
   type: 'object',
   fields: [
+    defineField({
+      name: 'title',
+      title: 'Title',
+      type: 'string',
+      description: 'Internal label shown in the Media modules list. Never rendered on the site.',
+    }),
     defineField({name: 'backgroundImage', title: 'Background image', type: 'image', options: {hotspot: true}}),
     defineField({name: 'backgroundImageMobile', title: 'Background image (mobile)', type: 'image', options: {hotspot: true}}),
     defineField({
@@ -79,7 +85,11 @@ export default defineType({
     }),
   ],
   preview: {
-    select: {media: 'foregroundImage'},
-    prepare: ({media}) => ({title: 'Parallax module', media}),
+    select: {title: 'title', media: 'foregroundImage', bg: 'backgroundImage'},
+    prepare: ({title, media, bg}) => ({
+      title: title || 'Parallax module',
+      subtitle: title ? 'Parallax module' : undefined,
+      media: media || bg,
+    }),
   },
 })
