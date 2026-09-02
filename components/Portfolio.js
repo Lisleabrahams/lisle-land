@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { boldNames } from './boldText'
 
 // Horizontal Scroll Image Component
-function HorizontalScrollImage({ src, alt, mobileSrc }) {
+function HorizontalScrollImage({ src, alt, mobileSrc, desktopHeight = '100', mobileHeight = '70' }) {
   const containerRef = useRef(null)
   const imageRef = useRef(null)
   const [offset, setOffset] = useState(0)
@@ -69,7 +69,7 @@ function HorizontalScrollImage({ src, alt, mobileSrc }) {
           src={mobileSrc || src}
           alt={alt}
           style={{
-            height: '70vh',
+            height: `${mobileHeight}vh`,
             width: 'auto',
             maxWidth: 'none',
             objectFit: 'cover',
@@ -109,7 +109,7 @@ function HorizontalScrollImage({ src, alt, mobileSrc }) {
           src={src}
           alt={alt}
           style={{
-            height: '100vh',
+            height: `${desktopHeight}vh`,
             width: 'auto',
             maxWidth: 'none',
             objectFit: 'cover',
@@ -1132,6 +1132,8 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                   <HorizontalScrollImage
                     src={media.imageUrl || media.image?.asset?.url}
                     mobileSrc={media.mobileImageUrl}
+                    desktopHeight={media.desktopHeight || '100'}
+                    mobileHeight={media.mobileHeight || '70'}
                     alt={media.alt || ''}
                   />
                 </div>
