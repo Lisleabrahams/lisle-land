@@ -132,7 +132,7 @@ function HorizontalScrollImage({ src, alt, mobileSrc, desktopHeight = '100', mob
   )
 }
 
-function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVideo, backgroundVideoMobile, foregroundImage, foregroundImageMobile, foregroundVideo, foregroundVideoMobile, backgroundMobile, foregroundMobile, backgroundWidth = '100', backgroundPosition = 'center', foregroundWidth = '100', foregroundPosition = 'center', mobileSpaceBelow, intensity = 5, alt }) {
+function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVideo, backgroundVideoMobile, foregroundImage, foregroundImageMobile, foregroundVideo, foregroundVideoMobile, backgroundMobile, foregroundMobile, backgroundWidth = '100', backgroundPosition = 'center', foregroundWidth = '100', foregroundPosition = 'center', mobileLayerGap, intensity = 5, alt }) {
   const containerRef = useRef(null)
   const [bgOffset, setBgOffset] = useState(0)
   const [fgOffset, setFgOffset] = useState(0)
@@ -217,6 +217,11 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
   // background, the foreground becomes the in-flow layer instead.
   const hasBg = !!(bgVideoSrc || bgSrc)
   const fgInFlow = isMobile && !hasBg
+  // Mobile layer gap: when set, the foreground stacks IN FLOW below the
+  // background with this % of screen height between them — negative pulls it
+  // up over the background. Blank keeps the default overlay layout.
+  const fgStacked = isMobile && hasBg && mobileLayerGap != null
+  const fgFlow = fgInFlow || fgStacked
 
   return (
     <div
@@ -227,7 +232,7 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
         minHeight: isMobile ? 0 : '100vh',
         marginLeft: isMobile ? '12px' : '60px',
         marginRight: isMobile ? '12px' : '60px',
-        marginBottom: isMobile ? `${mobileSpaceBelow ?? 16}px` : '100px',
+        marginBottom: isMobile ? '16px' : '100px',
         overflow: 'visible',
         backgroundColor: '#fff'
       }}
@@ -273,13 +278,14 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
 
       {/* Foreground Layer */}
       {(fgVideoSrc || fgSrc) && <div style={{
-        position: fgInFlow ? 'relative' : 'absolute',
-        ...(fgInFlow ? {} : isMobile
+        position: fgFlow ? 'relative' : 'absolute',
+        ...(fgFlow ? {} : isMobile
           ? { top: '0', left: '50%' }
           : { top: '50%', ...layerX(foregroundPosition) }),
+        ...(fgStacked ? { marginTop: `${mobileLayerGap}vh` } : {}),
         width: isMobile ? '100%' : `${foregroundWidth}%`,
-        height: fgInFlow ? 'auto' : '100%',
-        transform: fgInFlow
+        height: fgFlow ? 'auto' : '100%',
+        transform: fgFlow
           ? `translateY(${fgOffset}px)`
           : isMobile
             ? `translateX(-50%) translateY(${fgOffset}px)`
@@ -1173,7 +1179,7 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                     foregroundVideoMobile={media.foregroundVideoMobileUrl}
                     backgroundMobile={{ url: media.backgroundMobileUrl, mime: media.backgroundMobileMime }}
                     foregroundMobile={{ url: media.foregroundMobileUrl, mime: media.foregroundMobileMime }}
-                    mobileSpaceBelow={media.mobileSpaceBelow}
+                    mobileLayerGap={media.mobileLayerGap}
                     backgroundWidth={media.backgroundWidth || '100'}
                     backgroundPosition={media.backgroundPosition || 'center'}
                     foregroundWidth={media.foregroundWidth || '100'}

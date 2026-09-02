@@ -91,11 +91,11 @@ export default defineType({
       fieldset: 'mobile',
     }),
     defineField({
-      name: 'mobileSpaceBelow',
-      title: 'Space below (mobile, px)',
+      name: 'mobileLayerGap',
+      title: 'Gap between layers (mobile, %)',
       type: 'number',
-      description: 'Gap under this module on mobile. Empty = 16.',
-      validation: (R) => R.min(0).max(400),
+      description: 'Vertical space between the 1st (background) and 2nd (foreground) art on mobile, as % of the screen. Negative pulls the 2nd up over the 1st (e.g. -30); 50 = half a screen of air between them. Blank = default overlay layout.',
+      validation: (R) => R.min(-100).max(150),
       fieldset: 'mobile',
     }),
     // ---------- Shared ----------
