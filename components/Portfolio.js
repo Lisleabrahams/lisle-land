@@ -1342,8 +1342,9 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
                     background: 'none',
                     border: 'none',
                     fontFamily: '"Geist Mono", monospace',
-                    fontSize: '12px',
-                    lineHeight: '16px',
+                    // Same fluid size as the page type (header/intro clamp).
+                    fontSize: 'clamp(10px, 0.72vw, 18px)',
+                    lineHeight: 1.3,
                     fontWeight: 300,
                     cursor: 'pointer',
                     color: '#1a1a1a',
