@@ -111,7 +111,9 @@ function HorizontalScrollImage({ src, alt, mobileSrc, desktopHeight = '100', mob
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
-          backgroundColor: '#fff'
+          // Transparent so the docked character video (z -1) shows through —
+          // the page canvas behind is white anyway.
+          backgroundColor: 'transparent'
         }}
       >
         <img
@@ -234,7 +236,9 @@ function ParallaxModule({ backgroundImage, backgroundImageMobile, backgroundVide
         marginRight: isMobile ? '12px' : '60px',
         marginBottom: isMobile ? '16px' : '100px',
         overflow: 'visible',
-        backgroundColor: '#fff'
+        // Transparent so transparent PNGs/videos in the module reveal the
+        // docked character video behind the page instead of a white slab.
+        backgroundColor: 'transparent'
       }}
     >
       {/* Background Layer */}
