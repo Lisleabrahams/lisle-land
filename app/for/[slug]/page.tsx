@@ -10,6 +10,7 @@ const CHARACTER_LOADERS: Record<string, { webm: string; hevc: string; mp4?: stri
   ea: {
     webm: '/loader/character-alpha.webm',
     hevc: '/loader/character-alpha.mov',
+    mp4: '/loader/character-white.mp4',
     title: 'EA Battlefield X Lisle Abrahams',
   },
 }
