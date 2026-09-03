@@ -20,12 +20,12 @@ import { useEffect, useRef, useState } from 'react'
 const MOBILE_BREAKPOINT = 768
 
 // Timing
-const HOLD_MS = 2800          // hero hold before docking (first visit)
-const HOLD_SEEN_MS = 900      // repeat visitors: shorter hero, same choreography
+const HOLD_MS = 3900          // hero hold before docking — full run of the 3.9s animation
+const HOLD_SEEN_MS = 1200     // repeat visitors: shorter hero, same choreography
 const DOCK_MS = 1400          // slide + blur ramp duration
 const TITLE_FADE_MS = 450
 const MOBILE_FADE_MS = 550
-const DOCKED_RATE = 0.15      // "veeeeeery slowly"
+const DOCKED_RATE = 0.85      // near-full speed once docked
 
 // Desktop geometry (fractions of 1449×1067 frame)
 const D = {
@@ -51,6 +51,11 @@ const M = {
 export default function CharacterLoader({
   webmSrc,
   hevcSrc,
+  // White-background master (H.264 mp4 — plays natively in every browser).
+  // When set it wins over the alpha pair, and the video gets
+  // mix-blend-mode: multiply so the baked white background reads as
+  // transparent over the page (white multiplies to invisible).
+  mp4Src,
   title = 'EA Battlefield X Lisle Abrahams',
 }) {
   // phase: 'hero' → 'docking' → 'docked' (desktop) | 'fading' → 'gone' (mobile)
@@ -73,13 +78,13 @@ export default function CharacterLoader({
     const v = videoRef.current
     if (!v) return
     const canWebm = v.canPlayType('video/webm; codecs="vp9"')
-    const src = canWebm ? webmSrc : (hevcSrc || webmSrc)
+    const src = mp4Src || (canWebm ? webmSrc : (hevcSrc || webmSrc))
     if (src && v.src !== src) {
       v.src = src
       const p = v.play()
       if (p && p.catch) p.catch(() => {})
     }
-  }, [webmSrc, hevcSrc])
+  }, [webmSrc, hevcSrc, mp4Src])
 
   // Choreography clock.
   useEffect(() => {
@@ -189,6 +194,10 @@ export default function CharacterLoader({
             objectFit: 'cover',
             objectPosition: '60% 50%',
             display: 'block',
+            // White-bg master: multiply melts the white into whatever is
+            // behind (invisible on the white takeover, page shows through
+            // when docked). Alpha masters need no blending.
+            ...(mp4Src ? { mixBlendMode: 'multiply' } : {}),
           }}
         />
       </div>

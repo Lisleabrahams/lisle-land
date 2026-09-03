@@ -6,7 +6,7 @@ import CharacterLoader from '@/components/CharacterLoader'
 
 // Pitch pages with a character-video loader (Figma loader/landing concept).
 // TODO: move to Sanity fields (loaderVideo / loaderVideoMobile) once approved.
-const CHARACTER_LOADERS: Record<string, { webm: string; hevc: string; title: string }> = {
+const CHARACTER_LOADERS: Record<string, { webm: string; hevc: string; mp4?: string; title: string }> = {
   ea: {
     webm: '/loader/character-alpha.webm',
     hevc: '/loader/character-alpha.mov',
@@ -66,6 +66,7 @@ export default async function PitchPage({
         <CharacterLoader
           webmSrc={CHARACTER_LOADERS[slug].webm}
           hevcSrc={CHARACTER_LOADERS[slug].hevc}
+          mp4Src={CHARACTER_LOADERS[slug].mp4}
           title={CHARACTER_LOADERS[slug].title}
         />
       ) : (
