@@ -12,16 +12,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* The site is a white-canvas design on every system — no dark mode. The
+   page canvas is load-bearing: the docked character video sits just above
+   it (z -1) and the main container's "white" renders transparent, so a
+   dark canvas would show as a black page (seen on dark-mode machines). */
 body {
-  background: var(--background);
+  background: #ffffff;
   color: var(--foreground);
+  color-scheme: only light;
   font-family: Arial, Helvetica, sans-serif;
 }
 
