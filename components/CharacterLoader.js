@@ -32,15 +32,16 @@ const MOBILE_FADE_MS = 550
 const HOVER_SHARPEN_MS = 600  // docked hover: gentle snap to full sharpness
 const DOCKED_RATE = 0.85      // near-full speed once docked
 
-// Desktop geometry (fractions of 1449×1067 frame) — the approved layout.
-// The box crops the video with cover + object-position 60%; a soft fade-out
-// mask on the right edge (below) turns the crop into a dissolve so no hard
-// cut line ever shows mid-page on narrower screens.
+// Desktop geometry. The video renders at its FULL natural 16:9 frame at
+// full height (179.82vh wide) — nothing is ever cropped, no cut can exist.
+// The file's background is pure white, so its edges are invisible against
+// the page on every screen. Positioned so the character sits exactly where
+// the approved external-screen layout had him (face ~11vh from the left).
 const D = {
-  boxLeftHero: '0vw',
-  boxLeftDocked: '74.8vw',    // 1083.84 / 1449
+  boxLeftHero: '-47.6vh',                    // full frame shifted so the face margin is ~11vh
+  boxLeftDocked: 'calc(74.8vw - 47.6vh)',    // same slide distance as before
   boxTop: '-1.06vh',          // -11.33 / 1067
-  boxWidth: '64.97vw',        // 941.492 / 1449
+  boxWidth: '179.82vh',       // natural 16:9 width at full height — zero crop
   boxHeight: '101.15vh',      // 1079.227 / 1067
   blurDocked: 34,             // 33.9px in Figma
   titleLeft: '75.71vw',       // 1096.96 / 1449 (center point)
@@ -188,8 +189,11 @@ export default function CharacterLoader({
       const box = videoRef.current
       if (!box) return
       const r = box.getBoundingClientRect()
+      // Left ~29% of the frame is empty white — only the character region
+      // should trigger the hover sharpen.
+      const charLeft = r.left + r.width * 0.29
       setHovered(
-        e.clientX >= r.left && e.clientX <= r.right &&
+        e.clientX >= charLeft && e.clientX <= r.right &&
         e.clientY >= r.top && e.clientY <= r.bottom
       )
     }
@@ -229,14 +233,6 @@ export default function CharacterLoader({
     // Tailwind preflight caps video at max-width:100% — must be lifted or the
     // natural-aspect width gets squashed to the viewport (and crops again).
     maxWidth: 'none',
-    // Where the cover-crop cuts the character on narrower screens, dissolve
-    // the last stretch of the frame instead of showing a hard edge. Off-screen
-    // when docked (the box's right edge sits past the viewport), so the
-    // docked sliver is unaffected.
-    ...(mob ? {} : {
-      WebkitMaskImage: 'linear-gradient(to right, black 82%, transparent 99%)',
-      maskImage: 'linear-gradient(to right, black 82%, transparent 99%)',
-    }),
     objectFit: 'cover',
     objectPosition: '60% 50%',
     display: 'block',
