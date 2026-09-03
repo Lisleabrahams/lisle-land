@@ -11,10 +11,10 @@ import { useEffect, useRef, useState } from 'react'
 //             low-center (mobile), title in Geist Mono to the right / above.
 //             Holds until the animation has played ONCE in full (video
 //             'ended' + a small beat; safety timeout if playback never runs).
-//   dock    — desktop: video slides to the right edge, blurs to 34px, slows
-//             down and loops; at HALFWAY the video drops behind the page
-//             content and the white curtain lifts, so content comes in OVER
-//             the video and the curtain never washes over the page. Hovering
+//   dock    — desktop: one continuous slide to the right with the blur
+//             ramping in and the white curtain fading underneath; the video
+//             blends (multiply) so it never shows a white box over content,
+//             and only tucks behind the content once fully parked. Hovering
 //             the docked sliver gently pulls it into full sharpness.
 //           — mobile: everything fades out after the play-through (02_mobile).
 //
@@ -27,8 +27,6 @@ const MOBILE_BREAKPOINT = 768
 const POST_END_BEAT_MS = 350  // beat after the animation finishes, before docking
 const SAFETY_DOCK_MS = 6500   // dock anyway if video playback never completes
 const DOCK_MS = 1400          // slide + blur ramp duration
-const DOCK_HALF_MS = 700      // halfway point: video drops behind, veil starts lifting
-const VEIL_FADE_MS = 700      // white curtain fade once the video is behind
 const TITLE_FADE_MS = 450
 const MOBILE_FADE_MS = 550
 const HOVER_SHARPEN_MS = 600  // docked hover: gentle snap to full sharpness
@@ -65,7 +63,7 @@ export default function CharacterLoader({
   mp4Src,
   title = 'EA Battlefield X Lisle Abrahams',
 }) {
-  // phase: 'hero' → 'docking' → 'settling' → 'docked' (desktop) | 'fading' → 'gone' (mobile)
+  // phase: 'hero' → 'docking' → 'docked' (desktop) | 'fading' → 'gone' (mobile)
   const [phase, setPhase] = useState('hero')
   const [isMobile, setIsMobile] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -114,7 +112,6 @@ export default function CharacterLoader({
     const release = () => { document.body.style.overflow = prevOverflow }
 
     let beatTimeout = 0
-    let halfTimeout = 0
     let settleTimeout = 0
     let safetyTimeout = 0
     let done = false
@@ -133,15 +130,12 @@ export default function CharacterLoader({
           const p = v.play()
           if (p && p.catch) p.catch(() => {})
         }
-        // Halfway through the slide: video drops behind the content and the
-        // white curtain starts lifting — content comes in OVER the video.
-        halfTimeout = setTimeout(() => setPhase('settling'), DOCK_HALF_MS)
       }
       settleTimeout = setTimeout(() => {
         setPhase(mobile ? 'gone' : 'docked')
         dockedRef.current = true
         try { localStorage.setItem('lisle_intro_seen', '1') } catch (e) {}
-      }, mobile ? MOBILE_FADE_MS : (DOCK_HALF_MS + VEIL_FADE_MS + 200))
+      }, mobile ? MOBILE_FADE_MS : (DOCK_MS + 100))
     }
 
     const onEnded = () => {
@@ -158,7 +152,6 @@ export default function CharacterLoader({
     return () => {
       if (v) v.removeEventListener('ended', onEnded)
       clearTimeout(beatTimeout)
-      clearTimeout(halfTimeout)
       clearTimeout(settleTimeout)
       clearTimeout(safetyTimeout)
       release()
@@ -171,7 +164,7 @@ export default function CharacterLoader({
   useEffect(() => {
     if (phase !== 'docked' || isMobile) return
     const onMove = (e) => {
-      const box = boxRef.current
+      const box = videoRef.current
       if (!box) return
       const r = box.getBoundingClientRect()
       setHovered(
@@ -187,9 +180,8 @@ export default function CharacterLoader({
 
   const hero = phase === 'hero'
   const docking = phase === 'docking'
-  const settling = phase === 'settling'
   const docked = phase === 'docked'
-  const behind = settling || docked   // video behind the page content
+  const behind = docked   // video tucks behind the page content once settled
   const overlayInteractive = hero || phase === 'fading'
   const fadingOut = phase === 'fading'
 
@@ -200,30 +192,39 @@ export default function CharacterLoader({
   // white overlay covers any pre-hydration shuffle anyway.
   const mob = mounted && isMobile
   const blurPx = hero ? 0 : (docked && hovered ? 0 : D.blurDocked)
-  const boxStyle = mob
-    ? {
-        position: 'absolute',
-        left: M.boxLeft,
-        top: M.boxTop,
-        width: M.boxWidth,
-        height: M.boxHeight,
-      }
-    : {
-        position: 'absolute',
-        left: hero ? D.boxLeftHero : D.boxLeftDocked,
-        top: D.boxTop,
-        width: D.boxWidth,
-        height: D.boxHeight,
-        filter: `blur(${blurPx}px)`,
-        transition: `left ${DOCK_MS}ms ${ease}, filter ${docked ? HOVER_SHARPEN_MS : DOCK_MS}ms ${ease}`,
-        pointerEvents: 'none',
-      }
+  const videoStyle = {
+    position: 'fixed',
+    ...(mob
+      ? { left: M.boxLeft, top: M.boxTop, width: M.boxWidth, height: M.boxHeight }
+      : {
+          left: hero ? D.boxLeftHero : D.boxLeftDocked,
+          top: D.boxTop,
+          width: D.boxWidth,
+          height: D.boxHeight,
+        }),
+    // Above the curtain while the character is the show; tucks behind the
+    // page content (above the page background) once fully docked.
+    zIndex: behind ? -1 : 99998,
+    objectFit: 'cover',
+    objectPosition: '60% 50%',
+    display: 'block',
+    filter: `blur(${blurPx}px)`,
+    transition: `left ${DOCK_MS}ms ${ease}, filter ${docked ? HOVER_SHARPEN_MS : DOCK_MS}ms ${ease}${fadingOut ? `, opacity ${MOBILE_FADE_MS}ms ease-out` : ''}`,
+    opacity: fadingOut ? 0 : 1,
+    pointerEvents: 'none',
+    // White-bg master: the video is a DIRECT child of the root stacking
+    // context (no wrapper), so multiply genuinely blends with the page —
+    // the baked white background melts into whatever is behind it (the
+    // curtain during the hero, the page once revealed). Alpha masters need
+    // no blending.
+    ...(mp4Src ? { mixBlendMode: 'multiply' } : {}),
+  }
 
   return (
     <>
-      {/* White curtain — its own fixed layer ABOVE the content. Solid through
-          the hero and the first half of the slide, then lifts once the video
-          has dropped behind the content, so it never washes over the page. */}
+      {/* White curtain — above the content, below the video. Solid through
+          the hero, then fades over the slide; the character glides over it
+          (and over the emerging content) blended, never as a white box. */}
       <div
         aria-hidden="true"
         style={{
@@ -231,58 +232,35 @@ export default function CharacterLoader({
           inset: 0,
           backgroundColor: '#fff',
           zIndex: 99997,
-          opacity: hero || docking ? 1 : 0,
-          transition: `opacity ${fadingOut ? MOBILE_FADE_MS : VEIL_FADE_MS}ms ${ease}`,
+          opacity: hero ? 1 : 0,
+          transition: `opacity ${fadingOut ? MOBILE_FADE_MS : DOCK_MS}ms ${ease}`,
           pointerEvents: overlayInteractive ? 'auto' : 'none',
         }}
       />
 
-      <div
-      aria-hidden={hero ? 'false' : 'true'}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        // Above the curtain while the character is the show; behind the page
-        // content (above the page background) from halfway through the slide.
-        zIndex: behind ? -1 : 99998,
-        pointerEvents: 'none',
-        overflow: 'hidden',
-        opacity: fadingOut ? 0 : 1,
-        transition: fadingOut ? `opacity ${MOBILE_FADE_MS}ms ease-out` : undefined,
-      }}
-    >
-      {/* Character video */}
-      <div ref={boxRef} style={boxStyle}>
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          playsInline
-          disablePictureInPicture
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: '60% 50%',
-            display: 'block',
-            // White-bg master: multiply melts the white into whatever is
-            // behind (invisible on the white takeover, page background shows
-            // through when docked). Alpha masters need no blending.
-            ...(mp4Src ? { mixBlendMode: 'multiply' } : {}),
-          }}
-        />
-      </div>
+      {/* Character video — one element, continuous slide, no layer swaps
+          mid-flight. */}
+      <video
+        ref={videoRef}
+        autoPlay
+        muted
+        playsInline
+        disablePictureInPicture
+        aria-hidden={hero ? 'false' : 'true'}
+        style={videoStyle}
+      />
 
       {/* Title — Geist Mono, landing type size, capitalize (Figma 2301:3658) */}
       {!behind && (
         <p
           style={{
-            position: 'absolute',
+            position: 'fixed',
             left: mob ? '50vw' : D.titleLeft,
             top: mob ? M.titleTop : D.titleTop,
             transform: 'translateX(-50%)',
             width: mob ? 'min(332.977px, 88vw)' : '332.977px',
             margin: 0,
+            zIndex: 99999,
             fontFamily: 'var(--font-geist-mono), "Geist Mono", monospace',
             // Same size as the landing intro type (Portfolio desktop intro).
             fontSize: 'clamp(10px, 0.72vw, 18px)',
@@ -293,14 +271,14 @@ export default function CharacterLoader({
             textAlign: 'center',
             color: '#000',
             wordBreak: 'break-word',
-            opacity: hero || fadingOut ? 1 : 0,
+            opacity: hero ? 1 : 0,
             transition: `opacity ${TITLE_FADE_MS}ms ease-out`,
+            pointerEvents: 'none',
           }}
         >
           {title}
         </p>
       )}
-    </div>
     </>
   )
 }
