@@ -965,7 +965,11 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
       {/* Main Container */}
       <div style={{
         minHeight: '100vh',
-        backgroundColor: backgroundColor,
+        // White renders as TRANSPARENT white so the docked character video
+        // (fixed, z -1, pitch pages) shows through — visually identical on the
+        // white page canvas. Colour triggers still paint opaque colour over
+        // it; the video reappears when the background fades back to white.
+        backgroundColor: /^#fff(fff)?$/i.test(backgroundColor) ? 'rgba(255,255,255,0)' : backgroundColor,
         transition: 'background-color 0.6s ease, filter 0.4s ease-in-out',
         filter: transitionPhase !== 'none' ? 'blur(30px)' : 'none',
         fontFamily: '"Geist Mono", monospace',
