@@ -2,6 +2,17 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Portfolio from '@/components/Portfolio'
 import Loader from '@/components/Loader'
+import CharacterLoader from '@/components/CharacterLoader'
+
+// Pitch pages with a character-video loader (Figma loader/landing concept).
+// TODO: move to Sanity fields (loaderVideo / loaderVideoMobile) once approved.
+const CHARACTER_LOADERS: Record<string, { webm: string; hevc: string; title: string }> = {
+  ea: {
+    webm: '/loader/character-alpha.webm',
+    hevc: '/loader/character-alpha.mov',
+    title: 'EA Battlefield X Lisle Abrahams',
+  },
+}
 import PitchExpired from './PitchExpired'
 import { getPitchPage, getPitchMeta } from '@/lib/pitch'
 import { trackPitchView } from '@/lib/pitch-tracking'
@@ -51,7 +62,15 @@ export default async function PitchPage({
 
   return (
     <>
-      <Loader label={pitch.loaderCopy || undefined} boldName={pitch.clientName} />
+      {CHARACTER_LOADERS[slug] ? (
+        <CharacterLoader
+          webmSrc={CHARACTER_LOADERS[slug].webm}
+          hevcSrc={CHARACTER_LOADERS[slug].hevc}
+          title={CHARACTER_LOADERS[slug].title}
+        />
+      ) : (
+        <Loader label={pitch.loaderCopy || undefined} boldName={pitch.clientName} />
+      )}
       <Portfolio introText={pitch.introText || undefined} projects={projects} clientName={pitch.clientName} isPitch />
     </>
   )
