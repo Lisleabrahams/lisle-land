@@ -89,7 +89,9 @@ export default function CharacterLoader({
     const canWebm = v.canPlayType('video/webm; codecs="vp9"')
     const src = mp4Src || (canWebm ? webmSrc : (hevcSrc || webmSrc))
     if (src && v.src !== src) {
-      v.loop = false
+      // Boomerang master (forward + reversed baked in): ends on its first
+      // frame, so looping is seamless — no cut back to the beginning.
+      v.loop = true
       v.src = src
       const p = v.play()
       if (p && p.catch) p.catch(() => {})
@@ -125,7 +127,6 @@ export default function CharacterLoader({
       } else {
         setPhase('docking')
         if (v) {
-          v.loop = true
           v.playbackRate = DOCKED_RATE
           const p = v.play()
           if (p && p.catch) p.catch(() => {})
@@ -138,6 +139,17 @@ export default function CharacterLoader({
       }, mobile ? MOBILE_FADE_MS : (DOCK_MS + 100))
     }
 
+    // The file is a baked boomerang (forward + reversed): the hero is the
+    // forward pass, so dock once playback crosses the halfway point. The
+    // rewind then plays out during the slide and the docked loop.
+    let armed = false
+    const onTime = () => {
+      if (armed || !v || !v.duration) return
+      if (v.currentTime >= v.duration / 2) {
+        armed = true
+        beatTimeout = setTimeout(startDock, POST_END_BEAT_MS)
+      }
+    }
     const onEnded = () => {
       beatTimeout = setTimeout(startDock, POST_END_BEAT_MS)
     }
@@ -145,12 +157,18 @@ export default function CharacterLoader({
     if (reduced) {
       startDock()
     } else {
-      if (v) v.addEventListener('ended', onEnded)
+      if (v) {
+        v.addEventListener('timeupdate', onTime)
+        v.addEventListener('ended', onEnded)
+      }
       safetyTimeout = setTimeout(startDock, SAFETY_DOCK_MS)
     }
 
     return () => {
-      if (v) v.removeEventListener('ended', onEnded)
+      if (v) {
+        v.removeEventListener('timeupdate', onTime)
+        v.removeEventListener('ended', onEnded)
+      }
       clearTimeout(beatTimeout)
       clearTimeout(settleTimeout)
       clearTimeout(safetyTimeout)
