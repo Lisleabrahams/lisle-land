@@ -32,20 +32,16 @@ const MOBILE_FADE_MS = 550
 const HOVER_SHARPEN_MS = 600  // docked hover: gentle snap to full sharpness
 const DOCKED_RATE = 0.85      // near-full speed once docked
 
-// Desktop geometry. The video is sized by its OWN 16:9 aspect (height-driven,
-// 179.82vh wide at full height) so the character can never be cropped inside
-// the frame — the old 64.97vw cover-box guillotined his right side mid-page
-// on laptop ratios. Width is capped at 111vw so on squat screens he scales
-// down just enough to clear the title. The file has an empty margin baked
-// into its left third (character starts at ~31.8%), so the element is
-// shifted left by that amount to keep him flush with the viewport edge.
-const W = 'min(179.82vh, 111vw)'
+// Desktop geometry (fractions of 1449×1067 frame) — the approved layout.
+// The box crops the video with cover + object-position 60%; a soft fade-out
+// mask on the right edge (below) turns the crop into a dissolve so no hard
+// cut line ever shows mid-page on narrower screens.
 const D = {
-  boxLeftHero: `calc(${W} * -0.318)`,             // empty left margin off-screen
-  boxLeftDocked: `calc(74.8vw - ${W} * 0.318)`,   // same slide distance as 1083.84/1449
-  boxBottom: '-1.06vh',       // anchored to the bottom edge like the Figma
-  boxWidth: W,
-  charLeftFrac: 0.318,        // where the character starts inside the video frame
+  boxLeftHero: '0vw',
+  boxLeftDocked: '74.8vw',    // 1083.84 / 1449
+  boxTop: '-1.06vh',          // -11.33 / 1067
+  boxWidth: '64.97vw',        // 941.492 / 1449
+  boxHeight: '101.15vh',      // 1079.227 / 1067
   blurDocked: 34,             // 33.9px in Figma
   titleLeft: '75.71vw',       // 1096.96 / 1449 (center point)
   titleTop: '54.01vh',        // 576.3 / 1067
@@ -192,11 +188,8 @@ export default function CharacterLoader({
       const box = videoRef.current
       if (!box) return
       const r = box.getBoundingClientRect()
-      // The video's left third is empty margin — only the character region
-      // (from charLeftFrac onwards) should trigger the hover sharpen.
-      const charLeft = r.left + r.width * D.charLeftFrac
       setHovered(
-        e.clientX >= charLeft && e.clientX <= r.right &&
+        e.clientX >= r.left && e.clientX <= r.right &&
         e.clientY >= r.top && e.clientY <= r.bottom
       )
     }
@@ -226,10 +219,9 @@ export default function CharacterLoader({
       ? { left: M.boxLeft, top: M.boxTop, width: M.boxWidth, height: M.boxHeight }
       : {
           left: hero ? D.boxLeftHero : D.boxLeftDocked,
-          bottom: D.boxBottom,
+          top: D.boxTop,
           width: D.boxWidth,
-          height: 'auto',
-          aspectRatio: '16 / 9',
+          height: D.boxHeight,
         }),
     // Above the curtain while the character is the show; tucks behind the
     // page content (above the page background) once fully docked.
@@ -237,6 +229,14 @@ export default function CharacterLoader({
     // Tailwind preflight caps video at max-width:100% — must be lifted or the
     // natural-aspect width gets squashed to the viewport (and crops again).
     maxWidth: 'none',
+    // Where the cover-crop cuts the character on narrower screens, dissolve
+    // the last stretch of the frame instead of showing a hard edge. Off-screen
+    // when docked (the box's right edge sits past the viewport), so the
+    // docked sliver is unaffected.
+    ...(mob ? {} : {
+      WebkitMaskImage: 'linear-gradient(to right, black 82%, transparent 99%)',
+      maskImage: 'linear-gradient(to right, black 82%, transparent 99%)',
+    }),
     objectFit: 'cover',
     objectPosition: '60% 50%',
     display: 'block',
