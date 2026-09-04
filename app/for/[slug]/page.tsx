@@ -25,8 +25,27 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params
   const meta = await getPitchMeta(slug)
+  const title = meta?.clientName
+    ? `Lisle Abrahams — for ${meta.clientName}`
+    : 'Lisle Abrahams'
+  const description = meta?.clientName
+    ? `Portfolio and CV, put together for ${meta.clientName}.`
+    : 'World-class creative director with 10+ years of agency craft, now operating as an AI-augmented studio of one.'
   return {
-    title: meta?.clientName ? `Lisle Abrahams — for ${meta.clientName}` : 'Lisle Abrahams',
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://lisle.land/for/${slug}`,
+      siteName: 'lisle.land',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
     robots: { index: false, follow: false },
   }
 }

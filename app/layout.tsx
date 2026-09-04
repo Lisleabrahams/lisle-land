@@ -18,12 +18,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://lisle.land"),
   title: "Lisle Abrahams",
-  description: "World-class creative director with 15+ years of agency craft, now operating as an AI-augmented studio of one.",
+  description: "World-class creative director with 10+ years of agency craft, now operating as an AI-augmented studio of one.",
   keywords: ["portfolio", "creative", "creative director", "art direction", "AI"],
   authors: [{ name: "Lisle Abrahams" }],
   openGraph: {
     title: "Lisle Abrahams",
-    description: "World-class creative director with 15+ years of agency craft, now operating as an AI-augmented studio of one.",
+    description: "World-class creative director with 10+ years of agency craft, now operating as an AI-augmented studio of one.",
     type: "website",
     url: "https://lisle.land",
     siteName: "lisle.land",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Lisle Abrahams",
-    description: "World-class creative director with 15+ years of agency craft, now operating as an AI-augmented studio of one.",
+    description: "World-class creative director with 10+ years of agency craft, now operating as an AI-augmented studio of one.",
   },
 };
 
