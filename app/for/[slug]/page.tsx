@@ -1,18 +1,15 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Portfolio from '@/components/Portfolio'
-import Loader from '@/components/Loader'
 import CharacterLoader from '@/components/CharacterLoader'
 
-// Pitch pages with a character-video loader (Figma loader/landing concept).
-// TODO: move to Sanity fields (loaderVideo / loaderVideoMobile) once approved.
-const CHARACTER_LOADERS: Record<string, { webm: string; hevc: string; mp4?: string; title: string }> = {
-  ea: {
-    webm: '/loader/character-alpha.webm',
-    hevc: '/loader/character-alpha.mov',
-    mp4: '/loader/character-white-boomerang.mp4',
-    title: 'EA Battlefield X Lisle Abrahams',
-  },
+// Every application page gets the character-video loader. The title comes
+// from the pitch's Loader copy field in Sanity (falling back to
+// "<Client> X Lisle Abrahams"), so new applications need no code changes.
+const LOADER_ASSETS = {
+  webm: '/loader/character-alpha.webm',
+  hevc: '/loader/character-alpha.mov',
+  mp4: '/loader/character-white-boomerang.mp4',
 }
 import PitchExpired from './PitchExpired'
 import { getPitchPage, getPitchMeta } from '@/lib/pitch'
@@ -63,16 +60,12 @@ export default async function PitchPage({
 
   return (
     <>
-      {CHARACTER_LOADERS[slug] ? (
-        <CharacterLoader
-          webmSrc={CHARACTER_LOADERS[slug].webm}
-          hevcSrc={CHARACTER_LOADERS[slug].hevc}
-          mp4Src={CHARACTER_LOADERS[slug].mp4}
-          title={CHARACTER_LOADERS[slug].title}
-        />
-      ) : (
-        <Loader label={pitch.loaderCopy || undefined} boldName={pitch.clientName} />
-      )}
+      <CharacterLoader
+        webmSrc={LOADER_ASSETS.webm}
+        hevcSrc={LOADER_ASSETS.hevc}
+        mp4Src={LOADER_ASSETS.mp4}
+        title={pitch.loaderCopy || `${pitch.clientName} X Lisle Abrahams`}
+      />
       <Portfolio introText={pitch.introText || undefined} projects={projects} clientName={pitch.clientName} isPitch />
     </>
   )

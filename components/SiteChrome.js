@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import Loader from './Loader'
+import CharacterLoader from './CharacterLoader'
 import ProgressiveBlurEdges from './ProgressiveBlurEdges'
 
 /**
@@ -16,7 +16,14 @@ export default function SiteChrome() {
 
   return (
     <>
-      {pathname === '/' && <Loader />}
+      {pathname === '/' && (
+        <CharacterLoader
+          webmSrc="/loader/character-alpha.webm"
+          hevcSrc="/loader/character-alpha.mov"
+          mp4Src="/loader/character-white-boomerang.mp4"
+          title="Lisle Abrahams Creative Selection"
+        />
+      )}
       <ProgressiveBlurEdges />
       {/* Thin inset frame — above the blur, blends like the type so it stays
           crisp and visible over any content. */}
