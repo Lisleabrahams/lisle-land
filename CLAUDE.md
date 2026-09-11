@@ -2,6 +2,15 @@
 
 Lisle Abrahams' personal portfolio site. Next.js 16 + Sanity CMS.
 
+> **START HERE: read `CONTEXT.md` in this folder before doing anything.**
+> Sessions can't see each other's chats, so `CONTEXT.md` carries the working
+> context: Lisle's hard rules (use provided code verbatim; the loader video's
+> no-crop law; never fetch `/for/<slug>` pages — they track views and ping
+> Slack), the commit/push recipes that actually work from a Cowork session,
+> and the current state of the loader, module system and video pipeline.
+> When your changes make anything in `CONTEXT.md` stale, update it in the
+> same commit.
+
 ## Origin
 
 Cloned from [Lisleabrahams/lisleandpool](https://github.com/Lisleabrahams/lisleandpool) on 2026-05-15 and adapted into a personal site.
@@ -42,21 +51,20 @@ The fork is a clean trim, not a redesign. The portfolio chrome, scroll modules, 
 - **Metadata + footer updated.** Page title, OG description, and footer copy now reference `lisle.land` instead of `pool.day`.
 - **Package renamed** from `pool-portfolio-frontend` to `lisle-land`.
 
-## Connecting GitHub for push-to-deploy
+## Deploying
 
-The Vercel CLI returned `Failed to link Lisleabrahams/lisle-land. You need to add a Login Connection to your GitHub account first.` when trying to wire the repo to the Vercel project. To enable auto-deploy on push to `main`:
+Push-to-deploy is wired up: any push to `main` auto-deploys to production on
+Vercel (~90s build). No manual `vercel --prod` needed. Committing and pushing
+from a Cowork session needs the plumbing recipe in `CONTEXT.md` (the device VM
+blocks git's lockfile deletes, and porcelain `git commit` fatals).
 
-1. Open https://vercel.com/account/login-connections (logged in as the Vercel account that owns `lisle-abrahams-projects`).
-2. Add the GitHub login connection for the `Lisleabrahams` GitHub account.
-3. In the Vercel project → Settings → Git → connect the `Lisleabrahams/lisle-land` repo.
-
-Until that's done, deploys are manual via `vercel --prod`.
+After a deploy, Lisle's already-open tabs run the stale app — ask her to
+hard-refresh (⌘⇧R) before treating a "broken" report as a bug.
 
 ## Commands
 
 ```bash
 npm run dev    # local dev server
-npm run build  # production build (verified passing 2026-05-15)
+npm run build  # production build
 npm run lint
-vercel --prod  # deploy
 ```
