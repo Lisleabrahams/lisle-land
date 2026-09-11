@@ -48,13 +48,17 @@ const D = {
   titleTop: '54.01vh',        // 576.3 / 1067
 }
 
-// Mobile geometry (fractions of 402.834×873 frame)
+// Mobile geometry. Same no-crop law as desktop: the video renders its full
+// natural 16:9 frame spanning past the viewport top and bottom (the file's
+// own edges slice the character, so they must always sit off-screen).
+// Character face-centred; width = 102vh * 16/9, left centres the character
+// (his centre sits at 60.3% of the frame).
 const M = {
-  boxLeft: '-6.82vw',         // -27.48 / 402.834
-  boxTop: '19.08vh',          // 166.59 / 873
-  boxWidth: '159.02vw',       // 640.604 / 402.834
-  boxHeight: '84.11vh',       // 734.321 / 873
-  titleTop: '18.59vh',        // 162.3 / 873
+  boxLeft: 'calc(50vw - 109.4vh)', // centres the character (0.603 * width)
+  boxTop: '-1vh',
+  boxWidth: '181.4vh',             // natural 16:9 at 102vh height — zero crop
+  boxHeight: '102vh',
+  titleTop: '18.59vh',             // 162.3 / 873 (Figma 01_mobile)
 }
 
 export default function CharacterLoader({
@@ -237,7 +241,11 @@ export default function CharacterLoader({
     objectPosition: '60% 50%',
     display: 'block',
     filter: `blur(${blurPx}px)`,
-    transition: `left ${DOCK_MS}ms ${ease}, filter ${docked ? HOVER_SHARPEN_MS : DOCK_MS}ms ${ease}${fadingOut ? `, opacity ${MOBILE_FADE_MS}ms ease-out` : ''}`,
+    // Mobile never slides — the left/filter transitions are desktop dock
+    // choreography only (they made the mobile frame drift into place on load).
+    transition: mob
+      ? (fadingOut ? `opacity ${MOBILE_FADE_MS}ms ease-out` : 'none')
+      : `left ${DOCK_MS}ms ${ease}, filter ${docked ? HOVER_SHARPEN_MS : DOCK_MS}ms ${ease}`,
     opacity: fadingOut ? 0 : 1,
     pointerEvents: 'none',
     // White-bg master: the video is a DIRECT child of the root stacking
@@ -297,7 +305,10 @@ export default function CharacterLoader({
             letterSpacing: '-0.05em',
             textTransform: 'capitalize',
             textAlign: 'center',
-            color: '#000',
+            // Mobile: the full-height character sits behind the title, so
+            // blend like the site chrome — white in difference reads black
+            // on white and white on the dark helmet.
+            ...(mob ? { color: '#fff', mixBlendMode: 'difference' } : { color: '#000' }),
             wordBreak: 'break-word',
             opacity: hero ? 1 : 0,
             transition: `opacity ${TITLE_FADE_MS}ms ease-out`,
