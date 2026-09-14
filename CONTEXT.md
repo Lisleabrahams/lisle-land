@@ -96,6 +96,15 @@ Geometry (all values obey the no-crop law):
   `transition:'none'` except the fade-out opacity — the desktop dock `left`
   transition otherwise tweens the mobile position during hydration (SSR renders
   desktop geometry first).
+- Mobile Low Power Mode: iOS refuses autoplay (play() rejects NotAllowedError)
+  and paints a play glyph over the video — this can NOT be overridden; play()
+  only works after a user tap. So on mobile, when play() rejects or the video
+  hasn't started by 900ms, the video unmounts (killing the glyph) and
+  `/loader/character-static.png` (transparent PNG, trimmed 735×1205) renders
+  instead: fixed, centred, top 26vh (clear of the title), bottom-anchored via
+  `height: calc(100vh - 26vh)`, `objectPosition: 'center bottom'`,
+  maxWidth 94vw. The 6.5s safety timeout then fades the loader as usual.
+  Desktop never swaps (width-guarded).
 
 Architecture that matters: the `<video>` is a BARE fixed element at root — any
 wrapper div creates a stacking context that breaks `mix-blend-mode: multiply`

@@ -61,6 +61,13 @@ const M = {
   titleTop: '18.59vh',             // 162.3 / 873 (Figma 01_mobile)
 }
 
+// Mobile autoplay-blocked fallback (iOS Low Power Mode): the OS refuses
+// play() without a tap and paints a play-button glyph over the video, so the
+// video is swapped for a static transparent PNG. Positioned below the title
+// copy (title sits at 18.59vh) and anchored to the viewport bottom.
+const STATIC_FALLBACK_SRC = '/loader/character-static.png'
+const STATIC_TOP = '26vh'
+
 export default function CharacterLoader({
   webmSrc,
   hevcSrc,
@@ -76,6 +83,8 @@ export default function CharacterLoader({
   const [isMobile, setIsMobile] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [hovered, setHovered] = useState(false)
+  // Mobile only: autoplay refused (iOS Low Power Mode) → static image fallback.
+  const [autoplayBlocked, setAutoplayBlocked] = useState(false)
   const videoRef = useRef(null)
   const boxRef = useRef(null)
   const dockedRef = useRef(false)
@@ -94,6 +103,13 @@ export default function CharacterLoader({
   useEffect(() => {
     const v = videoRef.current
     if (!v) return
+    let blockTimer = 0
+    const markBlocked = () => {
+      // Only mobile swaps to the static image; desktop machines don't have
+      // Low Power Mode autoplay blocking in practice, and the safety timeout
+      // already covers any desktop playback failure.
+      if (window.innerWidth < MOBILE_BREAKPOINT) setAutoplayBlocked(true)
+    }
     const canWebm = v.canPlayType('video/webm; codecs="vp9"')
     const src = mp4Src || (canWebm ? webmSrc : (hevcSrc || webmSrc))
     if (src && v.src !== src) {
@@ -102,8 +118,15 @@ export default function CharacterLoader({
       v.loop = true
       v.src = src
       const p = v.play()
-      if (p && p.catch) p.catch(() => {})
+      // iOS Low Power Mode rejects play() with NotAllowedError. Belt and
+      // braces: if the video still hasn't started shortly after, treat it as
+      // blocked too (some Safari builds stall instead of rejecting).
+      if (p && p.catch) p.catch(markBlocked)
+      blockTimer = setTimeout(() => {
+        if (v.paused && v.currentTime === 0) markBlocked()
+      }, 900)
     }
+    return () => clearTimeout(blockTimer)
   }, [webmSrc, hevcSrc, mp4Src])
 
   // Choreography: hold the hero until the animation has played through once
@@ -275,16 +298,41 @@ export default function CharacterLoader({
       />
 
       {/* Character video — one element, continuous slide, no layer swaps
-          mid-flight. */}
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        playsInline
-        disablePictureInPicture
-        aria-hidden={hero ? 'false' : 'true'}
-        style={videoStyle}
-      />
+          mid-flight. On mobile with autoplay blocked (iOS Low Power Mode)
+          the video is removed entirely — unmounting it kills the OS play
+          glyph — and a static transparent PNG stands in, sitting below the
+          title copy and anchored to the bottom of the screen. */}
+      {mob && autoplayBlocked ? (
+        <img
+          src={STATIC_FALLBACK_SRC}
+          alt=""
+          aria-hidden="true"
+          style={{
+            position: 'fixed',
+            left: '50vw',
+            top: STATIC_TOP,
+            transform: 'translateX(-50%)',
+            height: `calc(100vh - ${STATIC_TOP})`,
+            maxWidth: '94vw',
+            objectFit: 'contain',
+            objectPosition: 'center bottom',
+            zIndex: 99998,
+            pointerEvents: 'none',
+            opacity: fadingOut ? 0 : 1,
+            transition: fadingOut ? `opacity ${MOBILE_FADE_MS}ms ease-out` : 'none',
+          }}
+        />
+      ) : (
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          playsInline
+          disablePictureInPicture
+          aria-hidden={hero ? 'false' : 'true'}
+          style={videoStyle}
+        />
+      )}
 
       {/* Title — Geist Mono, landing type size, capitalize (Figma 2301:3658) */}
       {!behind && (
