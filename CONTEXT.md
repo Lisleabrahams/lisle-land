@@ -90,12 +90,15 @@ Geometry (all values obey the no-crop law):
   `video` at 100% width and silently squashes vh-based widths — the override is
   load-bearing), hero left `-47.6vh` (face ~11vh from the edge), docked left
   `calc(74.8vw - 47.6vh)`, docked blur 34px.
-- Mobile: full-bleed 181.4vh × 102vh at top `-1vh`, left
-  `calc(50vw - 109.4vh)` (character centre = 60.3% of frame width). Title at
-  18.59vh, white with `mixBlendMode:'difference'`. Mobile has
-  `transition:'none'` except the fade-out opacity — the desktop dock `left`
-  transition otherwise tweens the mobile position during hydration (SSR renders
-  desktop geometry first).
+- Mobile: 163.56vh × 92vh at top `9vh`, left `calc(58vw - 98.63vh)`
+  (character centre = 60.3% of frame width, placed at 58vw). Lisle chose this
+  smaller/lower/right placement (14 Sep) knowing the file's top edge — where
+  the antennas stop — is on-screen at 9vh; keep that line ABOVE the title
+  (18.59vh) and keep boxTop + boxHeight ≥ 100vh or the file's bottom edge
+  cuts the chest mid-page. Title white with `mixBlendMode:'difference'`.
+  Mobile has `transition:'none'` except the fade-out opacity — the desktop
+  dock `left` transition otherwise tweens the mobile position during
+  hydration (SSR renders desktop geometry first).
 - Mobile Low Power Mode: iOS refuses autoplay (play() rejects NotAllowedError)
   and paints a play glyph over the video — this can NOT be overridden; play()
   only works after a user tap. So on mobile, when play() rejects or the video
