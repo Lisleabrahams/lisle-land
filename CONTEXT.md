@@ -101,10 +101,15 @@ Geometry (all values obey the no-crop law):
   only works after a user tap. So on mobile, when play() rejects or the video
   hasn't started by 900ms, the video unmounts (killing the glyph) and
   `/loader/character-static.png` (transparent PNG, trimmed 735×1205) renders
-  instead: fixed, centred, top 26vh (clear of the title), bottom-anchored via
-  `height: calc(100vh - 26vh)`, `objectPosition: 'center bottom'`,
-  maxWidth 94vw. The 6.5s safety timeout then fades the loader as usual.
-  Desktop never swaps (width-guarded).
+  instead. Its crop follows Figma 2405:876 "IPHONE EDIT": top 22.89vh, height
+  96.7vh (width auto + `maxWidth:'none'` — preflight trap), left
+  `calc(71.24vw - 29.48vh)`; the figure bleeds off the right and bottom. The
+  6.5s safety timeout then fades the loader as usual. Desktop never swaps
+  (width-guarded). NOTE: the loader VIDEO cannot be scaled down to that guide
+  — the character's antennas are clipped by the video file's own top edge
+  (verified: char bbox touches y=0 in every frame), so its top edge must stay
+  off-screen or the flat-cut antennas reappear; matching the guide needs a
+  re-rendered video with headroom.
 
 Architecture that matters: the `<video>` is a BARE fixed element at root — any
 wrapper div creates a stacking context that breaks `mix-blend-mode: multiply`

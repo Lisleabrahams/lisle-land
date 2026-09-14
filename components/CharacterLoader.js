@@ -63,10 +63,17 @@ const M = {
 
 // Mobile autoplay-blocked fallback (iOS Low Power Mode): the OS refuses
 // play() without a tap and paints a play-button glyph over the video, so the
-// video is swapped for a static transparent PNG. Positioned below the title
-// copy (title sits at 18.59vh) and anchored to the viewport bottom.
+// video is swapped for a static transparent PNG. Geometry transcribed from
+// Figma 2405:876 "IPHONE EDIT" (402×874 guide): the untrimmed 1078×1235
+// still sits at x -132.47 / y 178.99 at 755.67×866.22; converted here to the
+// trimmed PNG's content box (bbox 230,30–965,1235 of the original). The
+// figure bleeds off the right and bottom of the screen like the guide.
 const STATIC_FALLBACK_SRC = '/loader/character-static.png'
-const STATIC_TOP = '26vh'
+const STATIC = {
+  top: '22.89vh',                       // antenna tips just under the title
+  height: '96.7vh',                     // width follows (735:1205 aspect)
+  left: 'calc(71.24vw - 29.48vh)',      // centre at 71.24vw; 29.48vh = half width
+}
 
 export default function CharacterLoader({
   webmSrc,
@@ -309,13 +316,13 @@ export default function CharacterLoader({
           aria-hidden="true"
           style={{
             position: 'fixed',
-            left: '50vw',
-            top: STATIC_TOP,
-            transform: 'translateX(-50%)',
-            height: `calc(100vh - ${STATIC_TOP})`,
-            maxWidth: '94vw',
-            objectFit: 'contain',
-            objectPosition: 'center bottom',
+            left: STATIC.left,
+            top: STATIC.top,
+            height: STATIC.height,
+            width: 'auto',
+            // Tailwind preflight caps img at max-width:100% — must be lifted
+            // or the vh-driven width gets squashed (same trap as the video).
+            maxWidth: 'none',
             zIndex: 99998,
             pointerEvents: 'none',
             opacity: fadingOut ? 0 : 1,
