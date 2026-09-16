@@ -54,15 +54,17 @@ const D = {
 // Character face-centred; width = 102vh * 16/9, left centres the character
 // (his centre sits at 60.3% of the frame).
 const M = {
-  // Shrunk ~10% from full-bleed and shifted down + right (Lisle, 14 Sep, per
-  // the IPHONE EDIT guide's feel). The file's own top edge — where the
-  // antennas stop — is on-screen at boxTop, so keep that line HIGH (above
-  // the title at 18.59vh); and boxTop + boxHeight must stay ≥ 100vh or the
-  // file's bottom edge cuts the chest mid-page.
-  boxLeft: 'calc(58vw - 98.63vh)', // centres the character at 58vw (0.603 * width)
-  boxTop: '9vh',
-  boxWidth: '163.56vh',            // natural 16:9 at 92vh height — no distortion
-  boxHeight: '92vh',
+  // Full-bleed height with the file's top edge OFF-SCREEN — the video file
+  // has zero headroom (the antennas stop dead at its own top edge, verified
+  // frame by frame), so any on-screen top edge shows them flat-cut. That
+  // ruled out the 14 Sep "shrink + move down" placement (Lisle flagged the
+  // cut on 16 Sep). This is the smallest the video can render cleanly;
+  // a visibly smaller character needs a re-rendered file with headroom.
+  // Kept the rightward shift: character centred at 58vw (0.603 * width).
+  boxLeft: 'calc(58vw - 109.4vh)',
+  boxTop: '-1vh',
+  boxWidth: '181.4vh',             // natural 16:9 at 102vh height
+  boxHeight: '102vh',
   titleTop: '18.59vh',             // 162.3 / 873 (Figma 01_mobile)
 }
 
