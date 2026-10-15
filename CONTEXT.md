@@ -90,24 +90,22 @@ Geometry (all values obey the no-crop law):
   `video` at 100% width and silently squashes vh-based widths — the override is
   load-bearing), hero left `-47.6vh` (face ~11vh from the edge), docked left
   `calc(74.8vw - 47.6vh)`, docked blur 34px.
-- Mobile: 181.4vh × 102vh at top `-1vh`, left `calc(58vw - 109.4vh)`
-  (character centre = 60.3% of frame width, placed at 58vw). The file's TOP
-  EDGE MUST STAY OFF-SCREEN: the video has zero headroom — the antennas stop
-  dead at its own top edge (verified frame by frame) — so any on-screen top
-  edge shows them flat-cut. A 14 Sep "shrink 10% + move down to 9vh" attempt
-  did exactly that and Lisle flagged the cut on 16 Sep; it was reverted to
-  full height (the rightward 58vw shift was kept). A visibly smaller mobile
-  character requires a RE-RENDERED video with headroom above the antennas —
-  do not try to shrink this file again. Title white with
-  `mixBlendMode:'difference'`. Mobile has `transition:'none'` except the
-  fade-out opacity — the desktop dock `left` transition otherwise tweens the
-  mobile position during hydration (SSR renders desktop geometry first).
-- Mobile Low Power Mode: iOS refuses autoplay (play() rejects NotAllowedError)
-  and paints a play glyph over the video — this can NOT be overridden; play()
-  only works after a user tap. So on mobile, when play() rejects or the video
-  hasn't started by 900ms, the video unmounts (killing the glyph) and
-  `/loader/character-static.png` (transparent PNG, trimmed 735×1205) renders
-  instead. Its crop follows Figma 2405:876 "IPHONE EDIT": top 22.89vh, height
+- Mobile NO LONGER PLAYS THE VIDEO (since 15 Oct, Lisle-approved from a
+  screengrab): the head's sway makes the character 2.19× the width of a phone
+  screen at the smallest no-cut video size, so the face can never stay framed
+  — every shrink/shift attempt failed (top-cut flagged 11+16 Sep, face cut
+  flagged 15 Oct). Mobile now always renders the static still at the Figma
+  IPHONE EDIT crop (see the Low Power Mode bullet below — same geometry, now
+  the default, title 13px). The video is DESKTOP-ONLY. Do not remount the
+  video on mobile unless Lisle supplies a re-rendered file with the head
+  inside a portrait safe zone; the old mobile video geometry (181.4vh ×
+  102vh, top -1vh, char centre 58vw, both file edges off-screen) is what
+  you'd start from. Mobile keeps `transition:'none'` except the fade-out
+  opacity — the desktop dock `left` transition otherwise tweens the mobile
+  position during hydration (SSR renders desktop geometry first).
+- The mobile still composition (originally the Low Power Mode fallback, the
+  mobile DEFAULT since 15 Oct): `/loader/character-static.png` (transparent
+  PNG, trimmed 735×1205) renders instead of any video. Its crop follows Figma 2405:876 "IPHONE EDIT": top 22.89vh, height
   96.7vh (width auto + `maxWidth:'none'` — preflight trap), left
   `calc(71.24vw - 29.48vh)`; the figure bleeds off the right and bottom. The
   6.5s safety timeout then fades the loader as usual. Desktop never swaps

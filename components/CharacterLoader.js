@@ -316,7 +316,7 @@ export default function CharacterLoader({
           the video is removed entirely — unmounting it kills the OS play
           glyph — and a static transparent PNG stands in, sitting below the
           title copy and anchored to the bottom of the screen. */}
-      {mob && autoplayBlocked ? (
+      {mob ? (
         <img
           src={STATIC_FALLBACK_SRC}
           alt=""
@@ -361,7 +361,7 @@ export default function CharacterLoader({
             zIndex: 99999,
             fontFamily: 'var(--font-geist-mono), "Geist Mono", monospace',
             // Same size as the landing intro type (Portfolio desktop intro).
-            fontSize: 'clamp(10px, 0.72vw, 18px)',
+            fontSize: mob ? '13px' : 'clamp(10px, 0.72vw, 18px)',
             fontWeight: 400,
             lineHeight: 1.2,
             letterSpacing: '-0.05em',
