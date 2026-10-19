@@ -157,6 +157,11 @@ repeat-visitor fast path.
   fluid-type Next Project link, colour-picker bg triggers, oversized inverted
   cursor (off in /studio), MediaProtection right-click/drag blocking (off in
   /studio).
+- Video modules with mobileFullHeight (since 20 Oct, the Marshall fix): a
+  DEDICATED mobile video renders its full natural frame at 100vw, uncropped —
+  portrait phone exports must never be letterboxed into the 70vh cover box.
+  Only the desktop-video fallback (no mobileVideo set) keeps the 70vh cover
+  crop (intended full-bleed look, e.g. Highsnobiety).
 
 ## Video pipeline (for new loader/portfolio footage)
 
