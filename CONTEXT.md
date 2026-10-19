@@ -145,21 +145,21 @@ repeat-visitor fast path.
 - Both GROQ projections (`lib/pitch.js`, `app/page.tsx`) spread `...` so new
   scalar fields flow automatically; only asset derefs need explicit lines.
   Pitch pages render through the same `Portfolio.js` as the homepage.
-- Page-specific project copies (since 19 Oct): `project.pitchOnly` boolean
-  ("Application pages only"). Both all-projects queries (homepage and the
-  pitch no-selection fallback) filter `pitchOnly != true`; explicit
-  `selectedProjects` references don't filter, so copies render on the pages
-  that pick them. ONE-CLICK FORK (sanity/components/ForkProjectForPage.tsx,
-  wired as a pitchPage document action): the application page's ⋮ action
-  menu → "Copy a project for this page only…" duplicates the chosen project
-  with pitchOnly:true and swaps this page's reference to the copy in place.
-  CRITICAL to explain to Lisle when relevant: forking must happen BEFORE
-  editing — editing a shared project directly is global and no checkbox can
-  retroactively un-share those edits (she lost modules this way on 19 Oct).
-  Deleted content is recoverable via the Sanity History API:
-  `GET /v2024-01-21/data/history/production/documents/<id>?time=<ISO>` with
-  the Editor token returns the doc as of that time; patch the missing array
-  items back by _key (patch drafts.<id> too if a draft exists).
+- PER-PAGE MODULE VISIBILITY — "Hide on pages" (since 19 Oct, replaced the
+  pitchOnly/fork system Lisle found too complex; pitchOnly and the fork
+  document actions are REMOVED). Every module type carries a `hideOnPages`
+  field (array of pitchPage references, shared def in
+  sanity/schemaTypes/objects/hideOnPages.ts): add an application page there
+  and that module disappears on that page ONLY — the main site and every
+  other page keep it. Enforced server-side in lib/pitch.js getPitchPage
+  (media filtered where hideOnPages contains pitch._id); the homepage never
+  filters. This is how "edit a project's modules for one page" works — no
+  duplicating documents. NOTE: deleting a module in the Studio is still a
+  GLOBAL edit; the per-page tool is hiding, not deleting. First use:
+  the five "gaming" modules of Highsnobiety MISC are hidden on the On page
+  (pitch 29585108-f9c8-4782-b2e6-f134be66c6bb). When verifying, dev-mode
+  payloads contain Next debug copies of unfiltered data — test against
+  `next build && next start`, never trust dev-server HTML grep.
 - Also present: spacer appliesTo + mobile scale, opt-in negativeSpacer mobile
   pull, per-media parallax and L/C/R position, horizontalImage mobile slide,
   fluid-type Next Project link, colour-picker bg triggers, oversized inverted

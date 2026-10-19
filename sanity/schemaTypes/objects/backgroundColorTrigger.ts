@@ -1,4 +1,5 @@
 import {defineType, defineField} from 'sanity'
+import {hideOnPagesField} from './hideOnPages'
 import {HexColorInput} from '../../components/HexColorInput'
 
 export default defineType({
@@ -44,6 +45,7 @@ export default defineType({
       type: 'string',
       hidden: true,
     }),
+    hideOnPagesField,
   ],
   preview: {
     select: {color: 'quickPresets'},

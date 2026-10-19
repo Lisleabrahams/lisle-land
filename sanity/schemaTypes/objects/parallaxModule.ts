@@ -1,4 +1,5 @@
 import {defineType, defineField} from 'sanity'
+import {hideOnPagesField} from './hideOnPages'
 
 const WIDTHS = ['100', '80', '60', '50', '40', '30', '20']
 const POSITIONS = [
@@ -112,6 +113,7 @@ export default defineType({
     defineField({name: 'backgroundVideoMobile', title: 'Background video (mobile) — legacy', type: 'file', hidden: true}),
     defineField({name: 'foregroundImageMobile', title: 'Foreground image (mobile) — legacy', type: 'image', hidden: true}),
     defineField({name: 'foregroundVideoMobile', title: 'Foreground video (mobile) — legacy', type: 'file', hidden: true}),
+    hideOnPagesField,
   ],
   preview: {
     select: {title: 'title', media: 'foregroundImage', bg: 'backgroundImage'},

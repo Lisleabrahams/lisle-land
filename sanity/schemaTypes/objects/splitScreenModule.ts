@@ -1,4 +1,5 @@
 import {defineType, defineField} from 'sanity'
+import {hideOnPagesField} from './hideOnPages'
 
 export default defineType({
   name: 'splitScreenModule',
@@ -31,6 +32,7 @@ export default defineType({
       type: 'number',
       validation: (R) => R.min(0).max(20),
     }),
+    hideOnPagesField,
   ],
   preview: {
     select: {media: 'leftImage'},

@@ -1,4 +1,5 @@
 import {defineType, defineField} from 'sanity'
+import {hideOnPagesField} from './hideOnPages'
 
 export default defineType({
   name: 'horizontalImage',
@@ -33,6 +34,7 @@ export default defineType({
       description: 'Strip height on mobile. Default 70.',
       options: {list: ['100', '90', '80', '70', '60', '50', '40', '30']},
     }),
+    hideOnPagesField,
   ],
   preview: {
     select: {media: 'image'},

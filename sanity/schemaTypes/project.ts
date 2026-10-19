@@ -1,4 +1,5 @@
 import {defineType, defineField, defineArrayMember} from 'sanity'
+import {hideOnPagesField} from './objects/hideOnPages'
 
 /**
  * Portfolio project. Schema reproduced from the existing `production` dataset
@@ -24,14 +25,6 @@ export default defineType({
       title: 'Order',
       type: 'number',
       description: 'Controls position in the portfolio (ascending).',
-    }),
-    defineField({
-      name: 'pitchOnly',
-      title: 'Application pages only',
-      type: 'boolean',
-      initialValue: false,
-      description:
-        'Hide this project from the main lisle.land portfolio. Use for page-specific copies: duplicate a project, tick this, edit its modules freely, then select the copy in the application page — the original stays untouched everywhere else.',
     }),
     defineField({name: 'description', title: 'Description', type: 'text', rows: 4}),
     defineField({
@@ -85,6 +78,7 @@ export default defineType({
             }),
             defineField({name: 'mobileImage', title: 'Mobile image', type: 'image', options: {hotspot: true}}),
             defineField({name: 'mobileFullHeight', title: 'Mobile full height', type: 'boolean'}),
+            hideOnPagesField,
           ],
         }),
         // Extended built-in file (video) — stored _type "file".
@@ -129,6 +123,7 @@ export default defineType({
               description: 'Optional mobile-specific video. Falls back to the main video when empty.',
             }),
             defineField({name: 'mobileFullHeight', title: 'Mobile full height', type: 'boolean'}),
+            hideOnPagesField,
           ],
           preview: {
             select: {

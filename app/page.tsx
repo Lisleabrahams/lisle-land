@@ -7,7 +7,7 @@ export const revalidate = 60
 
 async function getData() {
   const homepage = await client.fetch(`*[_type == "homepage"][0]`)
-  const projects = await client.fetch(`*[_type == "project" && pitchOnly != true] | order(order asc) {
+  const projects = await client.fetch(`*[_type == "project"] | order(order asc) {
     _id,
     title,
     slug,

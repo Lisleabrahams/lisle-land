@@ -1,4 +1,5 @@
 import {defineType, defineField} from 'sanity'
+import {hideOnPagesField} from './hideOnPages'
 
 export default defineType({
   name: 'spacer',
@@ -28,6 +29,7 @@ export default defineType({
       },
       initialValue: 'both',
     }),
+    hideOnPagesField,
   ],
   preview: {
     select: {size: 'size', appliesTo: 'appliesTo'},

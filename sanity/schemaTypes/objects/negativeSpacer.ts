@@ -1,4 +1,5 @@
 import {defineType, defineField} from 'sanity'
+import {hideOnPagesField} from './hideOnPages'
 
 export default defineType({
   name: 'negativeSpacer',
@@ -20,6 +21,7 @@ export default defineType({
       description: 'Mobile pull-up. Empty = no pull on mobile (mobile reflows differently, so pulls are opt-in per breakpoint).',
       validation: (R) => R.min(0).max(100),
     }),
+    hideOnPagesField,
   ],
   preview: {
     select: {desktop: 'desktopAmount', mobile: 'mobileAmount'},
