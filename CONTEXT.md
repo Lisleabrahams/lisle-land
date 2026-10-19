@@ -145,6 +145,13 @@ repeat-visitor fast path.
 - Both GROQ projections (`lib/pitch.js`, `app/page.tsx`) spread `...` so new
   scalar fields flow automatically; only asset derefs need explicit lines.
   Pitch pages render through the same `Portfolio.js` as the homepage.
+- Page-specific project copies (since 19 Oct): `project.pitchOnly` boolean
+  ("Application pages only"). Workflow: duplicate a project in Studio, tick
+  the flag, edit the copy's modules freely, select the copy in the pitch —
+  the original and the main site never change. Both all-projects queries
+  (homepage and the pitch no-selection fallback) filter `pitchOnly != true`;
+  explicit `selectedProjects` references don't filter, so copies render on
+  the pages that pick them.
 - Also present: spacer appliesTo + mobile scale, opt-in negativeSpacer mobile
   pull, per-media parallax and L/C/R position, horizontalImage mobile slide,
   fluid-type Next Project link, colour-picker bg triggers, oversized inverted
