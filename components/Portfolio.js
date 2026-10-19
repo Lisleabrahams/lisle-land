@@ -998,7 +998,11 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
             fontWeight: 300,
             maxWidth: 'calc(100vw - 24px)',
             zIndex: 10001,
-            color: '#1a1a1a',
+            // White in difference — reads black on the white page and white
+            // over dark bg-trigger modules, same as the desktop intro (the
+            // old near-black text vanished on black bg modules, e.g. Marshall).
+            color: '#fff',
+            mixBlendMode: 'difference',
             marginBottom: '20px'
           }}>
             {displayedText}
