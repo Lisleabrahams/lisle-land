@@ -45,7 +45,27 @@ export default defineType({
       title: 'Project listing',
       type: 'array',
       description: 'Pick and drag-to-reorder the projects shown on this pitch. Leave empty to show all projects.',
-      of: [{type: 'reference', to: [{type: 'project'}]}],
+      of: [
+        {
+          type: 'reference',
+          to: [{type: 'project'}],
+          options: {
+            // Hide projects already in this list from the picker, so the
+            // same project can't be added twice.
+            filter: ({document}: {document: any}) => {
+              const ids = ((document?.selectedProjects as any[]) || [])
+                .map((r) => r?._ref)
+                .filter(Boolean)
+              return {
+                filter: '!(_id in $ids) && !(_id in $draftIds)',
+                params: {ids, draftIds: ids.map((id: string) => `drafts.${id}`)},
+              }
+            },
+          },
+        },
+      ],
+      // Belt and braces: a duplicate that slips in anyway blocks publishing.
+      validation: (R) => R.unique(),
     }),
     defineField({
       name: 'expiresAt',
