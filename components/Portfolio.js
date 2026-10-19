@@ -1234,11 +1234,42 @@ export default function Portfolio({ introText, projects, clientName = '', isPitc
               // Mobile-specific video when provided; falls back to the main one.
               const videoSrc = isMobile && media.mobileVideoUrl ? media.mobileVideoUrl : media.asset.url
 
-              // Mobile: 9:16 cropped full-height video when flagged in Sanity
+              // Mobile full-height video. Two cases:
+              // — A DEDICATED mobile video exists: it was exported for
+              //   phones (portrait), so render its full natural frame at
+              //   100vw with no crop. The old 70vh cover box was built for
+              //   repurposed landscape videos and sliced purpose-made
+              //   portrait exports top and bottom (Marshall bug, 20 Oct).
+              // — No mobile video: the desktop landscape video falls back
+              //   into the original 70vh cover crop (intended full-bleed
+              //   look, e.g. Highsnobiety).
               if (isMobile && media.mobileFullHeight === true) {
+                if (media.mobileVideoUrl) {
+                  return (
+                    <ScrollParallaxImage key={`${expandedProject}-${imgNum}`} amount={media.parallax || 0}>
+                    <div
+                      ref={(el) => { if (el) mediaRefs.current[imgNum] = el }}
+                      style={{ width: '100vw', marginBottom: '16px' }}
+                    >
+                      <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        style={{
+                          width: '100%',
+                          height: 'auto',
+                          display: 'block'
+                        }}
+                        src={videoSrc}
+                      />
+                    </div>
+                    </ScrollParallaxImage>
+                  )
+                }
                 return (
                   <ScrollParallaxImage key={`${expandedProject}-${imgNum}`} amount={media.parallax || 0}>
-                  <div 
+                  <div
                     ref={(el) => { if (el) mediaRefs.current[imgNum] = el }}
                     style={{
                       width: '100vw',
