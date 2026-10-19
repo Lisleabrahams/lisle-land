@@ -146,12 +146,20 @@ repeat-visitor fast path.
   scalar fields flow automatically; only asset derefs need explicit lines.
   Pitch pages render through the same `Portfolio.js` as the homepage.
 - Page-specific project copies (since 19 Oct): `project.pitchOnly` boolean
-  ("Application pages only"). Workflow: duplicate a project in Studio, tick
-  the flag, edit the copy's modules freely, select the copy in the pitch —
-  the original and the main site never change. Both all-projects queries
-  (homepage and the pitch no-selection fallback) filter `pitchOnly != true`;
-  explicit `selectedProjects` references don't filter, so copies render on
-  the pages that pick them.
+  ("Application pages only"). Both all-projects queries (homepage and the
+  pitch no-selection fallback) filter `pitchOnly != true`; explicit
+  `selectedProjects` references don't filter, so copies render on the pages
+  that pick them. ONE-CLICK FORK (sanity/components/ForkProjectForPage.tsx,
+  wired as a pitchPage document action): the application page's ⋮ action
+  menu → "Copy a project for this page only…" duplicates the chosen project
+  with pitchOnly:true and swaps this page's reference to the copy in place.
+  CRITICAL to explain to Lisle when relevant: forking must happen BEFORE
+  editing — editing a shared project directly is global and no checkbox can
+  retroactively un-share those edits (she lost modules this way on 19 Oct).
+  Deleted content is recoverable via the Sanity History API:
+  `GET /v2024-01-21/data/history/production/documents/<id>?time=<ISO>` with
+  the Editor token returns the doc as of that time; patch the missing array
+  items back by _key (patch drafts.<id> too if a draft exists).
 - Also present: spacer appliesTo + mobile scale, opt-in negativeSpacer mobile
   pull, per-media parallax and L/C/R position, horizontalImage mobile slide,
   fluid-type Next Project link, colour-picker bg triggers, oversized inverted
