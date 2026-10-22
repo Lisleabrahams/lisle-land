@@ -1,4 +1,5 @@
 import {defineType, defineField} from 'sanity'
+import {ProjectListInput} from '../components/ProjectListInput'
 
 /**
  * Targeted pitch / application page. Served at /for/<slug> as a private,
@@ -45,6 +46,7 @@ export default defineType({
       title: 'Project listing',
       type: 'array',
       description: 'Pick and drag-to-reorder the projects shown on this pitch. Leave empty to show all projects.',
+      components: {input: ProjectListInput},
       of: [
         {
           type: 'reference',
