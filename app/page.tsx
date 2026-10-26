@@ -7,7 +7,9 @@ export const revalidate = 60
 
 async function getData() {
   const homepage = await client.fetch(`*[_type == "homepage"][0]`)
-  const projects = await client.fetch(`*[_type == "project"] | order(order asc) {
+  // hideFromHome != true keeps application-only projects OFF the public
+  // homepage — they render only on /for/ pages that pick them explicitly.
+  const projects = await client.fetch(`*[_type == "project" && hideFromHome != true] | order(order asc) {
     _id,
     title,
     slug,

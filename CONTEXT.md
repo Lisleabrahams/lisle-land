@@ -145,6 +145,19 @@ repeat-visitor fast path.
 - Both GROQ projections (`lib/pitch.js`, `app/page.tsx`) spread `...` so new
   scalar fields flow automatically; only asset derefs need explicit lines.
   Pitch pages render through the same `Portfolio.js` as the homepage.
+- PROJECT VISIBILITY — "Hide from main site" (`hideFromHome` boolean on
+  project, since 26 Oct). The homepage query (`app/page.tsx`) and the pitch
+  empty-selection fallback (`lib/pitch.js` ALL_PROJECTS_QUERY) both filter
+  `hideFromHome != true`; a project explicitly picked in a pitch's
+  selectedProjects always shows regardless. Turn it ON for every
+  application-built project (currently On, Awake NY × Marshall, NIKE,
+  PILOT PENS) or it appears on PUBLIC lisle.land. HISTORY: the old
+  `pitchOnly` field did this job; when it was removed (19 Oct) the homepage
+  filter went with it and application projects leaked onto the public
+  homepage (urgent incident 26 Oct) — never remove this filter without a
+  replacement. NEVER delete an application project to hide it: pitchPages
+  reference it (Sanity blocks the delete with "others are using it") and
+  force-deleting breaks the /for/ page.
 - PER-PAGE MODULE VISIBILITY — "Hide on pages" (since 19 Oct, replaced the
   pitchOnly/fork system Lisle found too complex; pitchOnly and the fork
   document actions are REMOVED). Every module type carries a `hideOnPages`

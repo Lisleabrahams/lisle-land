@@ -28,6 +28,14 @@ export default defineType({
     }),
     defineField({name: 'description', title: 'Description', type: 'text', rows: 4}),
     defineField({
+      name: 'hideFromHome',
+      title: 'Hide from main site',
+      type: 'boolean',
+      description:
+        'ON: this project never appears on the public lisle.land homepage (or on an application page that has an empty project listing). It still shows on any application page that picks it explicitly. Turn this ON for projects built for applications.',
+      initialValue: false,
+    }),
+    defineField({
       name: 'media',
       title: 'Media modules',
       type: 'array',
