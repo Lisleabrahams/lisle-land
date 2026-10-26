@@ -31,8 +31,11 @@ export default defineType({
       name: 'hideFromHome',
       title: 'Hide from main site',
       type: 'boolean',
-      description:
-        'ON: this project never appears on the public lisle.land homepage (or on an application page that has an empty project listing). It still shows on any application page that picks it explicitly. Turn this ON for projects built for applications.',
+      // Plumbing, not UI: the desk's "Remove from main site" / "Show on main
+      // site" action flips this, moving the project between the
+      // "Projects (main site)" and "Application-only projects" lists. The
+      // homepage query and the pitch empty-selection fallback filter on it.
+      hidden: true,
       initialValue: false,
     }),
     defineField({

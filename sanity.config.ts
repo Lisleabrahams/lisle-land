@@ -3,6 +3,7 @@ import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './sanity/schemaTypes'
 import {structure} from './sanity/structure'
+import {ToggleMainSiteAction} from './sanity/components/ToggleMainSiteAction'
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'lmmr04bx'
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
@@ -21,4 +22,8 @@ export default defineConfig({
   basePath: '/studio',
   plugins: [structureTool({structure}), visionTool()],
   schema: {types: schemaTypes},
+  document: {
+    actions: (prev, context) =>
+      context.schemaType === 'project' ? [...prev, ToggleMainSiteAction] : prev,
+  },
 })

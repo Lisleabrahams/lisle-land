@@ -145,13 +145,19 @@ repeat-visitor fast path.
 - Both GROQ projections (`lib/pitch.js`, `app/page.tsx`) spread `...` so new
   scalar fields flow automatically; only asset derefs need explicit lines.
   Pitch pages render through the same `Portfolio.js` as the homepage.
-- PROJECT VISIBILITY — "Hide from main site" (`hideFromHome` boolean on
-  project, since 26 Oct). The homepage query (`app/page.tsx`) and the pitch
-  empty-selection fallback (`lib/pitch.js` ALL_PROJECTS_QUERY) both filter
-  `hideFromHome != true`; a project explicitly picked in a pitch's
-  selectedProjects always shows regardless. Turn it ON for every
-  application-built project (currently On, Awake NY × Marshall, NIKE,
-  PILOT PENS) or it appears on PUBLIC lisle.land. HISTORY: the old
+- PROJECT VISIBILITY — two desk lists (since 26 Oct, Lisle's chosen UX):
+  "Projects (main site)" IS the public homepage; "Application-only projects"
+  holds everything else (currently On, Awake NY × Marshall, NIKE,
+  PILOT PENS). Moving between lists = the "Remove from main site" /
+  "Show on main site" document action in the publish-chevron menu
+  (sanity/components/ToggleMainSiteAction.tsx, wired in sanity.config.ts).
+  Plumbing: a HIDDEN `hideFromHome` boolean on project — the action writes
+  it straight to published+draft (instant, no re-publish); the desk lists
+  (sanity/structure.ts), the homepage query (`app/page.tsx`) and the pitch
+  empty-selection fallback (`lib/pitch.js` ALL_PROJECTS_QUERY) all filter on
+  it. A project explicitly picked in a pitch's selectedProjects always shows
+  there regardless. Do NOT resurface the boolean as a visible form field —
+  Lisle explicitly wants list-membership UX, not a toggle. HISTORY: the old
   `pitchOnly` field did this job; when it was removed (19 Oct) the homepage
   filter went with it and application projects leaked onto the public
   homepage (urgent incident 26 Oct) — never remove this filter without a
